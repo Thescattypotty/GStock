@@ -1,0 +1,223 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="users()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['firstName', 'lastName', 'email', 'role', 'username']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedUsers"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Users</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th style="min-width: 8rem">Image</th>
+            <th pSortableColumn="firstName" style="min-width: 16rem">
+                first Name
+                <p-sortIcon field="firstName" />
+            </th>
+            <th pSortableColumn="lastName" style="min-width: 16rem">
+                Last Name
+                <p-sortIcon field="lastName" />
+            </th>
+            <th pSortableColumn="username" style="min-width: 8rem">
+                Username
+                <p-sortIcon field="username" />
+            </th>
+            <th pSortableColumn="email" style="min-width: 10rem">
+                Email
+                <p-sortIcon field="email" />
+            </th>
+            <th pSortableColumn="phone" style="min-width: 12rem">
+                Phone
+                <p-sortIcon field="phone" />
+            </th>
+            <th pSortableColumn="roles" style="min-width: 12rem">
+                Roles
+                <p-sortIcon field="roles" />
+            </th>
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-user>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="user" />
+            </td>
+            <td style="min-width: 8rem">
+                <img [src]="user.imageUrl" [alt]="user.firstName" style="width: 64px" class="rounded" />
+            </td>
+            <td style="min-width: 12rem">{{ user.firstName }}</td>
+            <td style="min-width: 12rem">{{ user.lastName }}</td>
+            <td style="min-width: 12rem">{{ user.username }}</td>
+            <td style="min-width: 12rem">{{ user.email }}</td>
+            <td style="min-width: 12rem">{{ user.phone }}</td>
+            <td style="min-width: 16rem">{{ user.roles }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="userDialog" [style]="{ width: '800px', weight: '1200px' }" header="User Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="image" class="block font-bold mb-3">Image</label>
+                <input type="text" pInputText id="image" [(ngModel)]="user.imageUrl" autofocus fluid />
+            </div>
+            <img [src]="user.imageUrl" [alt]="user.firstName" class="block m-auto pb-4" *ngIf="user.imageUrl" />
+            <div class="flex flex-col gap-6">
+                <label for="roles" class="block font-bold mb-3">Roles</label>
+                <p-multiselect [options]="roles" [(ngModel)]="user.roles" placeholder="Select Roles" id="roles" display="chip" [filter]="true" autofocus fluid>
+                    <ng-template #selectedItems let-roles>
+                        <div *ngFor="let role of roles">
+                            <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                <span class="mr-2" style="width: 18px; height: 12px"></span>
+                                <div>{{ role }}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template #item let-role>
+                        <div class="flex items-center">
+                            <div>{{ role }}</div>
+                        </div>
+                    </ng-template>
+                </p-multiselect>
+            </div>
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="username" class="block font-bold mb-3">Username</label>
+                    <input type="text" pInputText id="username" [(ngModel)]="user.username" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !user.username">Username is required.</small>
+                </div>
+
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="email" class="block font-bold mb-3">Email</label>
+                    <input type="email" pInputText id="email" [(ngModel)]="user.email" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !user.email">Email is required.</small>
+                </div>
+            </div>
+            <div>
+                <label for="password" class="block font-bold mb-3">Password</label>
+                <input type="password" pInputText id="password" [(ngModel)]="user.password" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !user.password">Password is required.</small>
+            </div>
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="firstName" class="block font-bold mb-3">First Name</label>
+                    <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !user.firstName">First Name is required.</small>
+                </div>
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="lastName" class="block font-bold mb-3">Last Name</label>
+                    <input type="text" pInputText id="lastName" [(ngModel)]="user.lastName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !user.lastName">Last Name is required.</small>
+                </div>
+            </div>
+            <div class="flex flex-wrap">
+                <label for="address">Address</label>
+                <textarea pTextarea id="address" rows="4" [(ngModel)]="user.address" required autofocus fluid></textarea>
+            </div>
+            <div>
+                <label for="phone" class="block font-bold mb-3">Phone number</label>
+                <input type="tel" pInputText id="phone" [(ngModel)]="user.phone" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !user.phone">Phone number is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveUser()" />
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="userUpdateDialog" [style]="{ width: '800px', weight: '1200px' }" header="User Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="firstName" class="block font-bold mb-3">First Name</label>
+                    <input type="text" pInputText id="firstName" [(ngModel)]="userUpdate.firstName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !userUpdate.firstName">First Name is required.</small>
+                </div>
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="lastName" class="block font-bold mb-3">Last Name</label>
+                    <input type="text" pInputText id="lastName" [(ngModel)]="userUpdate.lastName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !userUpdate.lastName">Last Name is required.</small>
+                </div>
+            </div>
+            <div class="flex flex-col gap-6">
+                <label for="roles" class="block font-bold mb-3">Roles</label>
+                <p-multiselect [options]="roles" [(ngModel)]="userUpdate.roles" id="roles" placeholder="Select Roles" display="chip" [filter]="true" autofocus fluid>
+                    <ng-template #selectedItems let-roles>
+                        <div *ngFor="let role of roles">
+                            <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                <span class="mr-2" style="width: 18px; height: 12px"></span>
+                                <div>{{ role }}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template #item let-role>
+                        <div class="flex items-center">
+                            <div>{{ role }}</div>
+                        </div>
+                    </ng-template>
+                </p-multiselect>
+            </div>
+            <div>
+                <label for="image" class="block font-bold mb-3">Image</label>
+                <input type="text" pInputText id="image" [(ngModel)]="userUpdate.imageUrl" autofocus fluid />
+            </div>
+            <img [src]="userUpdate.imageUrl" [alt]="userUpdate.firstName" class="block m-auto pb-4" *ngIf="userUpdate.imageUrl" />
+            
+            <div class="flex flex-wrap">
+                <label for="address">Address</label>
+                <textarea pTextarea id="address" rows="4" [(ngModel)]="userUpdate.address" required autofocus fluid></textarea>
+                <small class="text-red-500" *ngIf="submitted && !userUpdate.address">Address is required.</small>
+            </div>
+            <div>
+                <label for="phone" class="block font-bold mb-3">Phone number</label>
+                <input type="tel" pInputText id="phone" [(ngModel)]="userUpdate.phone" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !userUpdate.phone">Phone number is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideUpdateDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="updateUser()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

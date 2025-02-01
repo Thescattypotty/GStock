@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class LogoutHandlerJwt implements LogoutHandler{
     private final BlackListService blackListService;
@@ -22,6 +24,9 @@ public class LogoutHandlerJwt implements LogoutHandler{
         HttpServletResponse response,
         Authentication authentication
         ) {
+        if(authentication != null){
+            log.info("Request to logout user: {}", authentication.getPrincipal().toString());
+        }
         Optional.ofNullable(request.getHeader("Authorization"))
             .filter(header -> header.startsWith("Bearer "))
             .map(header -> header.substring(7))

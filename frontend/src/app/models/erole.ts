@@ -1,0 +1,31 @@
+export enum ERole {
+    //Gestion des stocks
+    GESTIONNAIRE_STOCK = 'GESTIONNAIRE_STOCK',
+    PREPARATEUR_COMMANDE = 'PREPARATEUR_COMMANDE',
+
+    // Achats et approvisionnements
+    RESPONSABLE_ACHATS = 'RESPONSABLE_ACHATS',
+    FOURNISSEUR = 'FOURNISSEUR',
+
+    // Ventes et distribution
+    COMMERCIAL = 'COMMERCIAL',
+    CONTROLEUR = 'CONTROLEUR',
+
+    // Support technique
+    TECHNICIEN_SUPPORT = 'TECHNICIEN_SUPPORT',
+
+    // Analayse et reporting,
+    ANALYSE_METIER = 'ANALYSE_METIER',
+
+    // Clients (optional)
+    CLIENT_FINAL = 'CLIENT_FINAL',
+
+    // Roles transverses
+    SUPER_ADMINISTRATEUR = 'SUPER_ADMINISTRATEUR',
+    INTEGRATEUR_TECHNIQUE = 'INTEGRATEUR_TECHNIQUE',
+    RESPONSABLE_QUALITE = 'RESPONSABLE_QUALITE',
+
+    // Autres
+    GESTIONNAIRE_LOTS = 'GESTIONNAIRE_LOTS',
+    AGENT_INVENTAIRE = 'AGENT_INVENTAIRE',
+}

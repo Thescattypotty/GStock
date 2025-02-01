@@ -1,5 +1,6 @@
 package org.gestionstock.stock.Security.Configuration;
 
+import org.gestionstock.stock.Configuration.CorsConfiguration;
 import org.gestionstock.stock.Security.Component.AuthenticationEntryPointJwt;
 import org.gestionstock.stock.Security.Component.LogoutHandlerJwt;
 import org.gestionstock.stock.Security.Component.OncePerRequestFilterJwt;
@@ -25,12 +26,14 @@ public class WebSecurityConfiguration {
     private final OncePerRequestFilterJwt oncePerRequestFilterJwt;
     private final AuthenticationEntryPointJwt authenticationEntryPointJwt;
     private final LogoutHandlerJwt logoutHandlerJwt;
+    private final CorsConfiguration corsConfiguration;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
             .csrf(CsrfConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfiguration.configurationSource()))
             .authorizeHttpRequests(
                 request -> request.anyRequest().permitAll()
             )
@@ -46,7 +49,7 @@ public class WebSecurityConfiguration {
                     .addLogoutHandler(logoutHandlerJwt)
                     .logoutSuccessHandler((request, response, authentication) -> {
                         response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().write("Logout successfully");
+                        response.getWriter().flush();
                     })
                     .permitAll()
             )

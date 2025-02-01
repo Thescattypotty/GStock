@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.gestionstock.stock.Enum.ERole;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -36,6 +38,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails{
 
     @Id
@@ -51,6 +54,21 @@ public class User implements UserDetails{
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(unique = true ,nullable = false)
+    private String phone;
+
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String imageUrl;
+    
     @Enumerated(EnumType.STRING)
     @ElementCollection(targetClass = ERole.class, fetch = FetchType.EAGER)
     private Set<ERole> roles;
