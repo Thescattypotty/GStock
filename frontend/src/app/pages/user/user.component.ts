@@ -18,12 +18,15 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TagModule } from 'primeng/tag';
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
+import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserResponse } from '../../models/user-response';
 import { ERole } from '../../models/erole';
 import { UserService } from '../../services/user/user.service';
 import { UserRequest } from '../../models/user-request';
 import { RegisterRequest } from '../../models/register-request';
+import { ChangePasswordRequest } from '../../models/change-password-request';
+import { ChangeUsernameRequest } from '../../models/change-username-request';
 
 
 interface Column {
@@ -64,8 +67,8 @@ interface Role {
         InputIconModule,
         IconFieldModule,
         ConfirmDialogModule,
-        MultiSelectModule
-
+        MultiSelectModule,
+        TooltipModule
     ],
     templateUrl: './user.component.html',
     providers: [ConfirmationService]
@@ -74,13 +77,26 @@ export class UserComponent implements OnInit{
 
     userDialog: boolean = false;
     userUpdateDialog: boolean = false;
+    
     users = signal<UserResponse[]>([]);
     user!: RegisterRequest;
-    userUpdate!: UserRequest;
+
     userUpdatedId!: string | null;
+    userUpdate!: UserRequest;
+    
     selectedUsers!: UserResponse[] | null;
     submitted: boolean = false;
     roles!: ERole[];
+
+    changePasswordRequest!: ChangePasswordRequest;
+    userChangePasswordId!: string | null;
+
+    changeUsernameRequest!: ChangeUsernameRequest;
+    userChangeUsernameId!: string | null;
+    userChangeUsernameUsername!: string | null; 
+
+    changePasswordDialog: boolean = false;
+    changeUsernameDialog: boolean = false;
 
     @ViewChild('dt') dt!: Table;
     exportColumns!: ExportColumn[];
@@ -167,6 +183,21 @@ export class UserComponent implements OnInit{
         this.submitted = false;
         this.userUpdateDialog = true;
     }
+    openChangePassword(){
+        this.changePasswordRequest = {
+            oldPassword: '',
+            newPassword: ''
+        }
+        this.submitted = false;
+        this.changePasswordDialog = true;
+    }
+    openChangeUsername(){
+        this.changeUsernameRequest = {
+            newUsername: ''
+        }
+        this.submitted = false;
+        this.changeUsernameDialog = true;
+    }
 
 
     editUser(UserResponse: UserResponse){
@@ -188,6 +219,15 @@ export class UserComponent implements OnInit{
                 this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error loading user'});
             }
         });
+    }
+    changePassword(id: string){
+        this.userChangePasswordId = id;
+        this.changePasswordDialog = true;
+    }
+    changeUsername(id: string, username: string){
+        this.userChangeUsernameId = id;
+        this.userChangeUsernameUsername = username;
+        this.changeUsernameDialog = true;
     }
 
     deleteSelectedUsers(){
@@ -211,14 +251,27 @@ export class UserComponent implements OnInit{
             }
         });
     }
+
     hideDialog(){
         this.userDialog = false;
         this.submitted = false;
     }
+
     hideUpdateDialog(){
         this.userUpdateDialog = false;
         this.submitted = false;
     }
+
+    hideChangePasswordDialog(){
+        this.changePasswordDialog = false;
+        this.submitted = false;
+    }
+
+    hideChangeUsernameDialog(){
+        this.changeUsernameDialog = false;
+        this.submitted = false;
+    }
+
     deleteUser(userResponse: UserResponse){
         this.confirmationService.confirm({
             message: 'Are you sure you want to delete ' + userResponse.username + '?',
@@ -247,6 +300,41 @@ export class UserComponent implements OnInit{
             }
         }
         return index + '';
+    }
+
+    saveChangePassword(){
+        this.submitted = true;
+        if(this.userChangePasswordId === null){
+            return;
+        }
+        this.userService.changePassword(this.userChangePasswordId, this.changePasswordRequest).subscribe({
+            next: () => {
+                this.changePasswordDialog = false;
+                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'Password Changed', life: 3000});
+            },
+            error: (error) => {
+                this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error changing password'});
+            }
+        });
+        this.userChangePasswordId = null;
+    }
+    saveChangeUsername(){
+        this.submitted = true;
+        if(this.userChangeUsernameId === null){
+            return;
+        }
+        this.userService.changeUsername(this.userChangeUsernameId, this.changeUsernameRequest).subscribe({
+            next: () => {
+                this.changeUsernameDialog = false;
+                this.loadUsers();
+                this.messageService.add({severity: 'success', summary: 'Successful', detail: 'Username Changed', life: 3000});
+            },
+            error: (error) => {
+                this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error changing username'});
+            }
+        });
+        this.userChangeUsernameId = null;
+        this.userChangeUsernameUsername = null;
     }
 
     saveUser(){

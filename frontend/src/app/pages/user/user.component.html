@@ -40,7 +40,7 @@
             </th>
             <th style="min-width: 8rem">Image</th>
             <th pSortableColumn="firstName" style="min-width: 16rem">
-                first Name
+                First Name
                 <p-sortIcon field="firstName" />
             </th>
             <th pSortableColumn="lastName" style="min-width: 16rem">
@@ -81,8 +81,10 @@
             <td style="min-width: 12rem">{{ user.phone }}</td>
             <td style="min-width: 16rem">{{ user.roles }}</td>
             <td>
-                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
-                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
+                <p-button icon="pi pi-unlock" pTooltip="Change Password" class="mr-2" [rounded]="true" [outlined]="true" (click)="changePassword(user.id)" />
+                <p-button icon="pi pi-user-edit" pTooltip="Change Username" class="mr-2" [rounded]="true" [outlined]="true" (click)="changeUsername(user.id, user.username)" />
+                <p-button icon="pi pi-pencil" pTooltip="Change User Informations" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete User" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
             </td>
         </tr>
     </ng-template>
@@ -219,5 +221,42 @@
         <p-button label="Save" icon="pi pi-check" (click)="updateUser()" />
     </ng-template>
 </p-dialog>
+<p-dialog [(visible)]="changePasswordDialog" [style]="{ width: '800px', weight: '1200px'}" header="Change Password" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="oldPassword" class="block font-bold mb-3">Old Password</label>
+                <input type="password" pInputText id="oldPassword" [(ngModel)]="changePasswordRequest.oldPassword" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changePasswordRequest.oldPassword">Old Password is required.</small>
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="newPassword" class="block font-bold mb-3">New Password</label>
+                <input type="password" pInputText id="newPassword" [(ngModel)]="changePasswordRequest.newPassword" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changePasswordRequest.newPassword">New Password is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideChangePasswordDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveChangePassword()" />
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="changeUsernameDialog" [style]="{ width: '800px', weight: '1200px'}" [header]="'Change Username : ' + userChangeUsernameUsername" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="newUsername" class="block font-bold mb-3">New Username</label>
+                <input type="text" pInputText id="newUsername" [(ngModel)]="changeUsernameRequest.newUsername" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changeUsernameRequest.newUsername">New Username is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideChangeUsernameDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveChangeUsername()" />
+    </ng-template>
 
 <p-confirmdialog [style]="{ width: '450px' }" />
