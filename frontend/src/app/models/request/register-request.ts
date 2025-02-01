@@ -1,4 +1,4 @@
-import { ERole } from "./erole";
+import { ERole } from "../enum/erole";
 
 export interface RegisterRequest {
     username: string;

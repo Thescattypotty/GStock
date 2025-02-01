@@ -8,8 +8,8 @@ import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../../layout/component/app.floatingconfigurator';
 import { AuthService } from '../../../services/auth/auth.service';
-import { LoginRequest } from '../../../models/login-request';
-import { JwtResponse } from '../../../models/jwt-response';
+import { LoginRequest } from '../../../models/request/login-request';
+import { JwtResponse } from '../../../models/response/jwt-response';
 import { MessageService } from 'primeng/api';
 
 @Component({

@@ -26,11 +26,14 @@ interface MenuChangeEvent {
     providedIn: 'root'
 })
 export class LayoutService {
+
+    private readonly LOCAL_STORAGE_KEY = 'GStockLayoutConfig';
+
     _config: layoutConfig = {
-        preset: 'Aura',
-        primary: 'emerald',
-        surface: null,
-        darkTheme: false,
+        preset: 'Lara',
+        primary: 'yellow',
+        surface: 'neutral',
+        darkTheme: true,
         menuMode: 'static'
     };
 
@@ -42,7 +45,7 @@ export class LayoutService {
         menuHoverActive: false
     };
 
-    layoutConfig = signal<layoutConfig>(this._config);
+    layoutConfig = signal<layoutConfig>(this.loadConfigFromLocalStorage() || this._config);
 
     layoutState = signal<LayoutState>(this._state);
 
@@ -165,6 +168,7 @@ export class LayoutService {
 
     onConfigUpdate() {
         this._config = { ...this.layoutConfig() };
+        this.saveConfigToLocalStorage(this._config)
         this.configUpdate.next(this.layoutConfig());
     }
 
@@ -174,5 +178,14 @@ export class LayoutService {
 
     reset() {
         this.resetSource.next(true);
+    }
+
+    private saveConfigToLocalStorage(config: layoutConfig) {
+        localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(config));
+    }
+
+    private loadConfigFromLocalStorage(): layoutConfig | null {
+        const config = localStorage.getItem(this.LOCAL_STORAGE_KEY);
+        return config ? JSON.parse(config) : null;
     }
 }

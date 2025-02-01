@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../../models/login-request';
+import { LoginRequest } from '../../models/request/login-request';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { JwtResponse } from '../../models/jwt-response';
+import { JwtResponse } from '../../models/response/jwt-response';
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +38,8 @@ export class AuthService {
                 this.isAuthenticatedSubject.next(false);
             })
             .catch((error) => {
+                localStorage.removeItem('accessToken');
+                this.isAuthenticatedSubject.next(false);
                 console.log(error);
             }
         );

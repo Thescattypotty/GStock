@@ -20,13 +20,13 @@ import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { UserResponse } from '../../models/user-response';
-import { ERole } from '../../models/erole';
+import { UserResponse } from '../../models/response/user-response';
+import { ERole } from '../../models/enum/erole';
 import { UserService } from '../../services/user/user.service';
-import { UserRequest } from '../../models/user-request';
-import { RegisterRequest } from '../../models/register-request';
-import { ChangePasswordRequest } from '../../models/change-password-request';
-import { ChangeUsernameRequest } from '../../models/change-username-request';
+import { UserRequest } from '../../models/request/user-request';
+import { RegisterRequest } from '../../models/request/register-request';
+import { ChangePasswordRequest } from '../../models/request/change-password-request';
+import { ChangeUsernameRequest } from '../../models/request/change-username-request';
 
 
 interface Column {
@@ -40,10 +40,6 @@ interface ExportColumn {
     dataKey: string;
 }
 
-interface Role {
-    name: string;
-    value: ERole;
-}
 
 @Component({
     selector: 'app-user',

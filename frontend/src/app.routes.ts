@@ -7,6 +7,8 @@ import { AccessDeniedComponent } from './app/pages/auth/access-denied/access-den
 import { DashboardComponent } from './app/pages/dashboard/dashboard.component';
 import { authGuard } from './app/guard/auth.guard';
 import { UserComponent } from './app/pages/user/user.component';
+import { InventoryComponent } from './app/pages/item/inventory/inventory.component';
+import { CategoryComponent } from './app/pages/item/category/category.component';
 
 
 export const appRoutes: Routes = [
@@ -32,8 +34,22 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'users', component: UserComponent
+            },
+            {
+                path: 'items',
+                children: [
+                    {
+                        path: '', component: InventoryComponent
+                    },
+                    {
+                        path: 'category', component: CategoryComponent
+                    }
+                ]
             }
         ]
+    },
+    {
+        path: 'login', redirectTo: '/', pathMatch: 'full'
     },
     {
         path: '**', redirectTo: '/404'

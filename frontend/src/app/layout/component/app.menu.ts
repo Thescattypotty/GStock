@@ -25,10 +25,10 @@ export class AppMenu {
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] }]
             },
             {
-                label: 'UI Components',
+                label: 'Inventory',
                 items: [
-                    { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout'] },
-                    { label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/uikit/input'] },
+                    { label: 'Items', icon: 'pi pi-fw pi-list', routerLink: ['/dashboard/items'] },
+                    { label: 'Categories', icon: 'pi pi-fw pi-table', routerLink: ['/dashboard/items/category'] },
                 ]
             },
             {

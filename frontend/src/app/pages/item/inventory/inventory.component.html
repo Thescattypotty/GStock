@@ -1,0 +1,141 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedItems()" [disabled]="!selectedItems || !selectedItems.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="items()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'description', 'costPrice', 'quantity', 'tva', 'category', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedItems"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Items"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Items</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="name" style="min-width: 16rem">
+                Item Name
+                <p-sortIcon field="name" />
+            </th>
+
+            <th pSortableColumn="costPrice" style="min-width: 16rem">
+                Cost Price
+                <p-sortIcon field="costPrice" />
+            </th>
+
+            <th pSortableColumn="tva" style="min-width: 16rem">
+                TVA
+                <p-sortIcon field="tva" />
+            </th>
+
+            <th pSortableColumn="quantity" style="min-width: 16rem">
+                Quantity
+                <p-sortIcon field="quantity" />
+            </th>
+
+            <th pSortableColumn="category" style="min-width: 16rem">
+                Category
+                <p-sortIcon field="category" />
+            </th>
+
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-item>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="item" />
+            </td>
+            <td style="min-width: 12rem">{{ item.name }}</td>
+            <td style="min-width: 12rem">{{ item.costPrice }}</td>
+            <td style="min-width: 12rem">{{ item.tva * 100}} %</td>
+            <td style="min-width: 12rem">{{ item.quantity }}</td>
+            <td style="min-width: 12rem">{{ item.category.name }}</td>
+
+            <td>
+                <p-button icon="pi pi-pencil" pTooltip="Update Item" class="mr-2" [rounded]="true" [outlined]="true" (click)="editItem(item)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete Item" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteItem(item)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="itemDialog" [style]="{ width: '800px', weight: '1200px' }" header="Item Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="item.name" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !item.name">Item Name is required.</small>
+            </div>
+            <div class="flex flex-wrap">
+                <label for="category">Category</label>
+                <p-select
+                    id="category"
+                    [(ngModel)]="item.categoryId"
+                    [options]="categories"
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Select a Category"
+                    class="w-full"
+                >
+                </p-select>        
+            </div>
+            <div class="flex flex-wrap">
+                <label for="description">Description</label>
+                <textarea pTextarea id="description" rows="4" [(ngModel)]="item.description" required autofocus fluid></textarea>
+            </div>
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="costPrice" class="block font-bold mb-3">Cost Price</label>
+                    <input type="number" pInputText id="costPrice" [(ngModel)]="item.costPrice" required autofocus fluid min="0" />
+                    <small class="text-red-500" *ngIf="submitted && !item.costPrice">Cost Price is required.</small>
+                </div>
+
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="tva" class="block font-bold mb-3">Tva</label>
+                    <input type="number" pInputText id="tva" [(ngModel)]="item.tva" required autofocus fluid min="0" max="1" />
+                    <small class="text-red-500" *ngIf="submitted && !item.tva">TVA is required.</small>
+                </div>
+            </div>
+            <div>
+                <label for="quantity" class="block font-bold mb-3">Quantity</label>
+                <input type="number" pInputText id="quantity" [(ngModel)]="item.quantity" required autofocus fluid min="0" />
+                <small class="text-red-500" *ngIf="submitted && !item.quantity">Item Quantity is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="itemId ? updateItem() : saveItem()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
