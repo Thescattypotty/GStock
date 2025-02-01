@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -63,6 +66,7 @@ public class InventoryItem {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "category_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ItemCategory category;
 
     @CreatedDate
@@ -77,6 +81,7 @@ public class InventoryItem {
     @Column(name = "created_by" ,nullable = false, updatable = false)
     private String createdBy;
 
+    @LastModifiedBy
     @Column(name = "updated_by",nullable = false)
     private String updatedBy;
 
