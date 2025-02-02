@@ -3,8 +3,10 @@ package org.gestionstock.stock.Service;
 import org.gestionstock.stock.Entity.User;
 import org.gestionstock.stock.Exception.InvalidCredentialsException;
 import org.gestionstock.stock.IService.IAuthenticationService;
+import org.gestionstock.stock.Payload.Mapper.UserMapper;
 import org.gestionstock.stock.Payload.Request.LoginRequest;
 import org.gestionstock.stock.Payload.Response.JwtResponse;
+import org.gestionstock.stock.Payload.Response.UserResponse;
 import org.gestionstock.stock.Util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService implements IAuthenticationService{
     
     private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -45,5 +48,11 @@ public class AuthenticationService implements IAuthenticationService{
         String jwt = jwtUtil.generateToken(user.getUsername(), user.getAuthorities());
         log.info("JWT: {} has been generated", jwt);
         return new JwtResponse(jwt);
+    }
+
+    @Override
+    public UserResponse currentUser() {
+       User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       return userMapper.fromUser(user);
     }   
 }

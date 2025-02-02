@@ -9,6 +9,7 @@ import { authGuard } from './app/guard/auth.guard';
 import { UserComponent } from './app/pages/user/user.component';
 import { InventoryComponent } from './app/pages/item/inventory/inventory.component';
 import { CategoryComponent } from './app/pages/item/category/category.component';
+import { ProfileComponent } from './app/pages/profile/profile.component';
 
 
 export const appRoutes: Routes = [
@@ -45,6 +46,9 @@ export const appRoutes: Routes = [
                         path: 'category', component: CategoryComponent
                     }
                 ]
+            },
+            {
+                path: 'profile', component: ProfileComponent
             }
         ]
     },

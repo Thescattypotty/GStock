@@ -1,1 +1,124 @@
-<p>profile works!</p>
+<div class="p-d-flex p-jc-center mt-4" style="padding: 0 20px;">
+  <p-card header="Profile Details" styleClass="w-full border-round shadow-2">
+    <ng-template pTemplate="content">
+      <div class="p-grid p-dir-col p-align-center" style="gap: 1rem; padding: 1rem;">
+        <div class="p-col">
+          <img [src]="user.imageUrl" [alt]="user.firstName" *ngIf="user.imageUrl" 
+               style="border-radius: 50%; width: 120px; height: 120px; border: 2px solid var(--surface-200);" />
+        </div>
+        <div class="p-col mt-4">
+          <p class="p-m-0"><strong>First Name:</strong> {{ user.firstName }}</p>
+          <p class="p-m-0"><strong>Last Name:</strong> {{ user.lastName }}</p>
+          <p class="p-m-0"><strong>Address:</strong> {{ user.address }}</p>
+          <p class="p-m-0"><strong>Phone:</strong> {{ user.phone }}</p>
+          <p class="p-m-0"><strong>Roles:</strong> {{ user.roles }}</p>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="p-d-flex p-jc-center flex-wrap" style="gap: 1rem; padding: 0.75rem;">
+        <p-button label="Edit Profile" icon="pi pi-user-edit" styleClass="p-button-rounded p-button-outlined" (onClick)="editUser()"></p-button>
+        <p-button label="Change Password" icon="pi pi-lock" styleClass="p-button-rounded p-button-outlined" (onClick)="openChangePassword()"></p-button>
+        <p-button label="Change Username" icon="pi pi-pencil" styleClass="p-button-rounded p-button-outlined" (onClick)="openChangeUsername()"></p-button>
+      </div>
+    </ng-template>
+  </p-card>
+</div>
+
+<p-dialog [(visible)]="userDialog" [style]="{ width: '800px', weight: '1200px' }" header="User Details" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-wrap gap-6">
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="firstName" class="block font-bold mb-3">First Name</label>
+                    <input type="text" pInputText id="firstName" [(ngModel)]="userUpdate.firstName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !userUpdate.firstName">First Name is required.</small>
+                </div>
+                <div class="flex flex-col grow basis-0 gap-2">
+                    <label for="lastName" class="block font-bold mb-3">Last Name</label>
+                    <input type="text" pInputText id="lastName" [(ngModel)]="userUpdate.lastName" required autofocus fluid />
+                    <small class="text-red-500" *ngIf="submitted && !userUpdate.lastName">Last Name is required.</small>
+                </div>
+            </div>
+            <div class="flex flex-col gap-6" *ngIf="user.roles.includes(SUPER_ADMINISTRATEUR)">
+                <label for="roles" class="block font-bold mb-3">Roles</label>
+                <p-multiselect [options]="roles" [(ngModel)]="userUpdate.roles" id="roles" placeholder="Select Roles" display="chip" [filter]="true" autofocus fluid>
+                    <ng-template #selectedItems let-roles>
+                        <div *ngFor="let role of roles">
+                            <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                <span class="mr-2" style="width: 18px; height: 12px"></span>
+                                <div>{{ role }}</div>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template #item let-role>
+                        <div class="flex items-center">
+                            <div>{{ role }}</div>
+                        </div>
+                    </ng-template>
+                </p-multiselect>
+            </div>
+            <div>
+                <label for="image" class="block font-bold mb-3">Image</label>
+                <input type="text" pInputText id="image" [(ngModel)]="userUpdate.imageUrl" autofocus fluid />
+            </div>
+            <img [src]="userUpdate.imageUrl" [alt]="userUpdate.firstName" class="block m-auto pb-4" *ngIf="userUpdate.imageUrl" />
+
+            <div class="flex flex-wrap">
+                <label for="address">Address</label>
+                <textarea pTextarea id="address" rows="4" [(ngModel)]="userUpdate.address" required autofocus fluid></textarea>
+                <small class="text-red-500" *ngIf="submitted && !userUpdate.address">Address is required.</small>
+            </div>
+            <div>
+                <label for="phone" class="block font-bold mb-3">Phone number</label>
+                <input type="tel" pInputText id="phone" [(ngModel)]="userUpdate.phone" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !userUpdate.phone">Phone number is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="updateUser()" />
+    </ng-template>
+</p-dialog>
+<p-dialog [(visible)]="changePasswordDialog" [style]="{ width: '800px', weight: '1200px' }" header="Change Password" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="oldPassword" class="block font-bold mb-3">Old Password</label>
+                <input type="password" pInputText id="oldPassword" [(ngModel)]="changePasswordRequest.oldPassword" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changePasswordRequest.oldPassword">Old Password is required.</small>
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="newPassword" class="block font-bold mb-3">New Password</label>
+                <input type="password" pInputText id="newPassword" [(ngModel)]="changePasswordRequest.newPassword" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changePasswordRequest.newPassword">New Password is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideChangePasswordDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveChangePassword()" />
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="changeUsernameDialog" [style]="{ width: '800px', weight: '1200px' }" [header]="'Change Username : ' + user.username" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="newUsername" class="block font-bold mb-3">New Username</label>
+                <input type="text" pInputText id="newUsername" [(ngModel)]="changeUsernameRequest.newUsername" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !changeUsernameRequest.newUsername">New Username is required.</small>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideChangeUsernameDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="saveChangeUsername()" />
+    </ng-template>
+
+    <p-confirmdialog [style]="{ width: '450px' }" />
+</p-dialog>

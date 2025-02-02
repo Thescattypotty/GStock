@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginRequest } from '../../models/request/login-request';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { JwtResponse } from '../../models/response/jwt-response';
+import { UserResponse } from '../../models/response/user-response';
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +21,9 @@ export class AuthService {
 
     login(loginRequest: LoginRequest): Observable<JwtResponse> {
         return this.http.post<JwtResponse>(`${this.API_URL}/login`, loginRequest);
+    }
+    currentUser(): Observable<UserResponse> {
+        return this.http.get<UserResponse>(`${this.API_URL}/user`);
     }
 
     setToken(accessToken: string): void {
