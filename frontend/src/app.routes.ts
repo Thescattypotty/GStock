@@ -10,6 +10,8 @@ import { UserComponent } from './app/pages/user/user.component';
 import { InventoryComponent } from './app/pages/item/inventory/inventory.component';
 import { CategoryComponent } from './app/pages/item/category/category.component';
 import { ProfileComponent } from './app/pages/profile/profile.component';
+import { CompanyComponent } from './app/pages/company/company.component';
+import { ContactComponent } from './app/pages/contact/contact.component';
 
 
 export const appRoutes: Routes = [
@@ -46,6 +48,12 @@ export const appRoutes: Routes = [
                         path: 'category', component: CategoryComponent
                     }
                 ]
+            },
+            {
+                path: 'companies', component: CompanyComponent
+            },
+            {
+                path: 'contacts', component: ContactComponent
             },
             {
                 path: 'profile', component: ProfileComponent

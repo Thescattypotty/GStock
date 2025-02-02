@@ -1,0 +1,191 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedCompanies()" [disabled]="!selectedCompanies || !selectedCompanies.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="companies()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['name', 'size', 'industry', 'businessType', 'country', 'city', 'salesOwner', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedCompanies"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Companies"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Companies</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="name" style="min-width: 16rem">
+                Name
+                <p-sortIcon field="name" />
+            </th>
+            <th pSortableColumn="size" style="min-width: 16rem">
+                Size
+                <p-sortIcon field="size" />
+            </th>
+
+            <th pSortableColumn="industry" style="min-width: 16rem">
+                Industry
+                <p-sortIcon field="industry" />
+            </th>
+
+            <th pSortableColumn="businessType" style="min-width: 16rem">
+                Business Type
+                <p-sortIcon field="businessType" />
+            </th>
+
+            <th pSortableColumn="country" style="min-width: 16rem">
+                Country
+                <p-sortIcon field="country" />
+            </th>
+            <th pSortableColumn="city" style="min-width: 16rem">
+                City
+                <p-sortIcon field="city" />
+            </th>
+            <th pSortableColumn="salesOwner" style="min-width: 16rem">
+                Sales Owner
+                <p-sortIcon field="salesOwner" />
+            </th>
+
+            <th pSortableColumn="createdAt" style="min-width: 16rem">
+                Created At
+                <p-sortIcon field="createdAt" />
+            </th>
+
+            <th pSortableColumn="updatedAt" style="min-width: 16rem">
+                Updated At
+                <p-sortIcon field="updatedAt" />
+            </th>
+
+            <th pSortableColumn="createdBy" style="min-width: 16rem">
+                Created By
+                <p-sortIcon field="createdBy" />
+            </th>
+
+            <th pSortableColumn="updatedBy" style="min-width: 16rem">
+                Modified By
+                <p-sortIcon field="updatedBy" />
+            </th>
+
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-company>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="company" />
+            </td>
+            <td style="min-width: 12rem" class="flex items-center gap-2">
+                <img [src]="company.imageUrl" [alt]="company.name" style="width: 40px" class="rounded" />
+                <span>{{ company.name }}</span>
+            </td>
+            <td style="min-width: 12rem">{{ company.size }}</td>
+            <td style="min-width: 12rem">{{ company.industry }}</td>
+            <td style="min-width: 12rem">{{ company.businessType }}</td>
+            <td style="min-width: 12rem">{{ company.country }}</td>
+            <td style="min-width: 12rem">{{ company.city }}</td>
+            <td style="min-width: 12rem">{{ company.salesOwner.username }}</td>
+
+            <td style="min-width: 12rem">{{ company.createdAt }}</td>
+            <td style="min-width: 12rem">{{ company.updatedAt }}</td>
+            <td style="min-width: 12rem">{{ company.createdBy }}</td>
+            <td style="min-width: 12rem">{{ company.updatedBy }}</td>
+
+            <td>
+                <p-button icon="pi pi-pencil" pTooltip="Update Company" class="mr-2" [rounded]="true" [outlined]="true" (click)="editCompany(company)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete Company" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteCompany(company)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="companyDialog" [style]="{ width: '800px', weight: '1200px' }" header="Company Details" [modal]="true">
+    <ng-template #content>
+        <div>
+            <label for="name" class="block font-bold mb-3">Name</label>
+            <input type="text" pInputText id="name" [(ngModel)]="company.name" required autofocus fluid />
+            <small class="text-red-500" *ngIf="submitted && !company.name">Client Name is required.</small>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="size" class="block font-bold mb-3">Size</label>
+                <p-select id="size" [(ngModel)]="company.size" [options]="sizes" placeholder="Select Size" class="w-full" />
+                <small class="text-red-500" *ngIf="submitted && !company.size">Size is required.</small>
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="industry" class="block font-bold mb-3">Industry</label>
+                <p-select id="industry" [(ngModel)]="company.industry" [options]="industries" placeholder="Select Industry" class="w-full" />
+                <small class="text-red-500" *ngIf="submitted && !company.industry">Industry is required.</small>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="businessType" class="block font-bold mb-3">Business Type</label>
+                <p-select id="businessType" [(ngModel)]="company.businessType" [options]="businessTypes" placeholder="Select Business Type" class="w-full" />
+                <small class="text-red-500" *ngIf="submitted && !company.businessType">Business Type is required.</small>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="country" class="block font-bold mb-3">Country</label>
+                <input type="text" pInputText id="country" [(ngModel)]="company.country" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !company.country">Country is required.</small>
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="city" class="block font-bold mb-3">City</label>
+                <input type="text" pInputText id="city" [(ngModel)]="company.city" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !company.city">City is required.</small>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="salesOwner" class="block font-bold mb-3">Sales Owner</label>
+                <p-select id="salesOwner" [(ngModel)]="company.salesOwnerId" [options]="salesOwners" optionLabel="username" optionValue="id"  placeholder="Select Sales Owner" class="w-full" />
+                <small class="text-red-500" *ngIf="submitted && !company.salesOwnerId">Sales Owner is required.</small>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="contacts" class="block font-bold mb-3">Contacts</label>
+                <p-multiSelect id="contacts" [(ngModel)]="company.contactsId" [options]="contacts" optionLabel="fullName" optionValue="id" placeholder="Select Contacts" class="w-full" />
+                <small class="text-red-500" *ngIf="submitted && !company.contactsId">Contacts are required.</small>
+            </div>
+        </div>
+        <div class="mt-4">
+            <label for="image" class="block font-bold mb-3">Image</label>
+            <input type="text" pInputText id="image" [(ngModel)]="company.imageUrl" autofocus fluid />
+        </div>
+        <img [src]="company.imageUrl" [alt]="company.name" class="block m-auto pb-4 mt-4" *ngIf="company.imageUrl" />
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="companyId ? updateCompany() : saveCompany()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

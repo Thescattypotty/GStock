@@ -22,14 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ItemCategoryService implements IItemCategoryService{
 
-    private final ItemCategoryMapper itemCategoryMapper;
     private final ItemCategoryRepository itemCategoryRepository;
 
     @Override
     @Transactional
     public void createCategory(ItemCategoryRequest itemCategoryRequest) {
         log.info("Creating new category: {}", itemCategoryRequest);
-        itemCategoryRepository.save(itemCategoryMapper.toItemCategory(itemCategoryRequest));
+        itemCategoryRepository.save(ItemCategoryMapper.toItemCategory(itemCategoryRequest));
         log.info("Created new category: {}", itemCategoryRequest);
     }
 
@@ -60,7 +59,7 @@ public class ItemCategoryService implements IItemCategoryService{
     public ItemCategoryResponse getCategory(String id) {
         log.info("Getting category with id: {}", id);
         return itemCategoryRepository.findById(UUID.fromString(id))
-            .map(itemCategoryMapper::fromItemCategory)
+            .map(ItemCategoryMapper::fromItemCategory)
             .orElseThrow(() -> new ItemCategoryNotFoundException());
     }
 
@@ -69,7 +68,7 @@ public class ItemCategoryService implements IItemCategoryService{
         log.info("Getting all categories");
         return itemCategoryRepository.findAll()
             .stream()
-            .map(itemCategoryMapper::fromItemCategory)
+            .map(ItemCategoryMapper::fromItemCategory)
             .collect(Collectors.toList());
     }
 }

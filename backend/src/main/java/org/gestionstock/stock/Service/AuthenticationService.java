@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService implements IAuthenticationService{
     
     private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -53,6 +52,6 @@ public class AuthenticationService implements IAuthenticationService{
     @Override
     public UserResponse currentUser() {
        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       return userMapper.fromUser(user);
+       return UserMapper.fromUser(user);
     }   
 }

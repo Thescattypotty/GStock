@@ -1,0 +1,160 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedContacts()" [disabled]="!selectedContacts || !selectedContacts.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="contacts()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['fullName', 'email', 'phone', 'companyResponse.name', 'title', 'createdAt', 'createdBy', 'updatedAt', 'updatedBy']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedContacts"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Contacts"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Contacts</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="fullName" style="min-width: 16rem">
+                Full Name
+                <p-sortIcon field="fullName" />
+            </th>
+            <th pSortableColumn="email" style="min-width: 16rem">
+                Email
+                <p-sortIcon field="email" />
+            </th>
+
+            <th pSortableColumn="title" style="min-width: 16rem">
+                Title
+                <p-sortIcon field="title" />
+            </th>
+
+            <th pSortableColumn="phone" style="min-width: 16rem">
+                Phone Number
+                <p-sortIcon field="phone" />
+            </th>
+
+            <th pSortableColumn="companyName" style="min-width: 16rem">
+                Company Name
+                <p-sortIcon field="companyName" />
+            </th>
+
+            <th pSortableColumn="createdAt" style="min-width: 16rem">
+                Created At
+                <p-sortIcon field="createdAt" />
+            </th>
+
+            <th pSortableColumn="updatedAt" style="min-width: 16rem">
+                Updated At
+                <p-sortIcon field="updatedAt" />
+            </th>
+
+            <th pSortableColumn="createdBy" style="min-width: 16rem">
+                Created By
+                <p-sortIcon field="createdBy" />
+            </th>
+
+            <th pSortableColumn="updatedBy" style="min-width: 16rem">
+                Modified By
+                <p-sortIcon field="updatedBy" />
+            </th>
+
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-contact>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="contact" />
+            </td>
+            <td style="min-width: 12rem"  class="flex items-center gap-2">
+                <img [src]="contact.imageUrl" [alt]="contact.fullName" style="width: 40px" class="rounded" />
+                <span>{{ contact.fullName }}</span>
+            </td>
+            <td style="min-width: 12rem">{{ contact.email }}</td>
+            <td style="min-width: 12rem">{{ contact.title }}</td>
+            <td style="min-width: 12rem">{{ contact.phone }}</td>
+            <td style="min-width: 12rem">{{ contact.companyResponse.name }}</td>
+            <td style="min-width: 12rem">{{ contact.createdAt }}</td>
+            <td style="min-width: 12rem">{{ contact.updatedAt }}</td>
+            <td style="min-width: 12rem">{{ contact.createdBy }}</td>
+            <td style="min-width: 12rem">{{ contact.updatedBy }}</td>
+
+            <td>
+                <p-button icon="pi pi-pencil" pTooltip="Update Contact" class="mr-2" [rounded]="true" [outlined]="true" (click)="editContact(contact)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete Contact" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteContact(contact)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="contactDialog" [style]="{ width: '800px', weight: '1200px' }" header="Contact Details" [modal]="true">
+    <ng-template #content>
+            <div>
+                <label for="name" class="block font-bold mb-3">Client Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="contact.fullName" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !contact.fullName">Client Nameis required.</small>
+            </div>
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="company">Company</label>
+                <p-list-box id="company" [(ngModel)]="contact.companyId" [options]="companies" optionLabel="name" optionValue="id" placeholder="Select a company" [filter]="true"  />
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="title" class="block font-bold mb-3">Title</label>
+                <input type="text" pInputText id="title" [(ngModel)]="contact.title" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !contact.title">Title is required.</small>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="email" class="block font-bold mb-3">Email</label>
+                <input type="email" pInputText id="email" [(ngModel)]="contact.email" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !contact.email">Email is required.</small>
+            </div>
+            <div class="flex flex-col grow basis-0 gap-2">
+                <label for="phone" class="block font-bold mb-3">Phone Number</label>
+                <input type="text" pInputText id="phone" [(ngModel)]="contact.phone" required fluid />
+                <small class="text-red-500" *ngIf="submitted && !contact.phone">Phone Number is required.</small>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <label for="image" class="block font-bold mb-3">Image</label>
+            <input type="text" pInputText id="image" [(ngModel)]="contact.imageUrl" autofocus fluid />
+        </div>
+        <img [src]="contact.imageUrl" [alt]="contact.fullName" class="block m-auto pb-4 mt-4" *ngIf="contact.imageUrl" />
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="contactId ? updateContact() : saveContact()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

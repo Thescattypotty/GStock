@@ -28,13 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService implements IUserService{
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     
     @Override
     @Transactional
     public void createUser(RegisterRequest RegusterRequest) {
-        User user = userMapper.toUser(RegusterRequest);
+        User user = UserMapper.toUser(RegusterRequest);
         log.info("User: {}", user);
         user.setPassword(passwordEncoder.encode(RegusterRequest.password()));
         userRepository.save(user);
@@ -102,7 +101,7 @@ public class UserService implements IUserService{
     public UserResponse getUser(String id) {
         log.info("User id: {}", id);
         return userRepository.findById(UUID.fromString(id))
-            .map(userMapper::fromUser)
+            .map(UserMapper::fromUser)
             .orElseThrow(() -> new UserNotFoundException());
     }
 
@@ -111,7 +110,7 @@ public class UserService implements IUserService{
         log.info("All users");
         return userRepository.findAll()
             .stream()
-            .map(userMapper::fromUser)
+            .map(UserMapper::fromUser)
             .collect(Collectors.toList());
     }
     

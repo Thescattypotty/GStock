@@ -25,14 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 public class InventoryItemService implements IInventoryItemService{
     
     private final InventoryItemRepository inventoryItemRepository;
-    private final InventoryItemMapper inventoryItemMapper;
     private final ItemCategoryRepository itemCategoryRepository;
 
     @Override
     @Transactional
     public void createInventoryItem(InventoryItemRequest inventoryItemRequest) {
         log.info("Creating inventory item: {}", inventoryItemRequest);
-        InventoryItem inventoryItem = inventoryItemMapper.toInventoryItem(inventoryItemRequest);
+        InventoryItem inventoryItem = InventoryItemMapper.toInventoryItem(inventoryItemRequest);
         log.info("Inventory item: {}", inventoryItem);
         inventoryItem.setCategory(
             itemCategoryRepository.findById(UUID.fromString(inventoryItemRequest.categoryId()))
@@ -49,7 +48,7 @@ public class InventoryItemService implements IInventoryItemService{
         InventoryItem inventoryItem = inventoryItemRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new InventoryItemNotFoundException());
         log.info("Inventory item: {}", inventoryItem);
-        inventoryItem = inventoryItemMapper.toInventoryItem(inventoryItem, inventoryItemRequest);
+        inventoryItem = InventoryItemMapper.toInventoryItem(inventoryItem, inventoryItemRequest);
         inventoryItem.setCategory(
             itemCategoryRepository.findById(UUID.fromString(inventoryItemRequest.categoryId()))
                 .orElseThrow(() -> new ItemCategoryNotFoundException())
@@ -74,7 +73,7 @@ public class InventoryItemService implements IInventoryItemService{
     public InventoryItemResponse getInventoryItem(String id) {
         log.info("Getting inventory item: {}", id);
         return inventoryItemRepository.findById(UUID.fromString(id))
-            .map(inventoryItemMapper::fromInventoryItem)
+            .map(InventoryItemMapper::fromInventoryItem)
             .orElseThrow(() -> new InventoryItemNotFoundException());
     }
 
@@ -83,7 +82,7 @@ public class InventoryItemService implements IInventoryItemService{
         log.info("Getting all inventory items");
         return inventoryItemRepository.findAll()
             .stream()
-            .map(inventoryItemMapper::fromInventoryItem)
+            .map(InventoryItemMapper::fromInventoryItem)
             .collect(Collectors.toList());
     }
 }

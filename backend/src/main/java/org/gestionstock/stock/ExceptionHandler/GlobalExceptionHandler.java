@@ -1,5 +1,7 @@
 package org.gestionstock.stock.ExceptionHandler;
 
+import org.gestionstock.stock.Exception.CompanyNotFoundException;
+import org.gestionstock.stock.Exception.ContactNotFoundException;
 import org.gestionstock.stock.Exception.InvalidCredentialsException;
 import org.gestionstock.stock.Exception.InventoryItemNotFoundException;
 import org.gestionstock.stock.Exception.ItemCategoryNotFoundException;
@@ -14,7 +16,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
-    @ExceptionHandler({UserNotFoundException.class, InventoryItemNotFoundException.class, ItemCategoryNotFoundException.class})
+    @ExceptionHandler(
+        {
+            UserNotFoundException.class,
+            InventoryItemNotFoundException.class,
+            ItemCategoryNotFoundException.class,
+            ContactNotFoundException.class,
+            CompanyNotFoundException.class
+        })
     public ResponseEntity<String> handleNotFoundException(RuntimeException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }

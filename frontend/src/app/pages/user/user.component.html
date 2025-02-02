@@ -81,9 +81,9 @@
             <td style="min-width: 12rem">{{ user.phone }}</td>
             <td style="min-width: 16rem">{{ user.roles }}</td>
             <td>
-                <p-button icon="pi pi-unlock" pTooltip="Change Password" class="mr-2" [rounded]="true" [outlined]="true" (click)="changePassword(user.id)" />
-                <p-button icon="pi pi-user-edit" pTooltip="Change Username" class="mr-2" [rounded]="true" [outlined]="true" (click)="changeUsername(user.id, user.username)" />
-                <p-button icon="pi pi-pencil" pTooltip="Change User Informations" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-pencil" pTooltip="Change User Informations" severity="info" class="mr-2" [rounded]="true" [outlined]="true" (click)="editUser(user)" />
+                <p-button icon="pi pi-unlock" pTooltip="Change Password" severity="warn" class="mr-2" [rounded]="true" [outlined]="true" (click)="changePassword(user.id)" />
+                <p-button icon="pi pi-user-edit" pTooltip="Change Username" severity="primary" class="mr-2" [rounded]="true" [outlined]="true" (click)="changeUsername(user.id, user.username)" />
                 <p-button icon="pi pi-trash" pTooltip="Delete User" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteUser(user)" />
             </td>
         </tr>

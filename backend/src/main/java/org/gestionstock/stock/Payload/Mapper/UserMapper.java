@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service(value = "UserMapper")
 public class UserMapper {
     
-    public User toUser(RegisterRequest registerRequest){
+    public static User toUser(RegisterRequest registerRequest){
         return User.builder()
             .username(registerRequest.username())
             .email(registerRequest.email())
@@ -24,7 +24,7 @@ public class UserMapper {
             .build();
     }
 
-    public UserResponse fromUser(User user){
+    public static UserResponse fromUser(User user){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return new UserResponse(
             user.getId().toString(),

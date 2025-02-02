@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 @Service(value = "ItemCategoryMapper")
 public class ItemCategoryMapper {
     
-    public ItemCategory toItemCategory(ItemCategoryRequest itemCategoryRequest){
+    public static ItemCategory toItemCategory(ItemCategoryRequest itemCategoryRequest){
         return ItemCategory.builder()
             .name(itemCategoryRequest.name())
             .build();
     }
 
-    public ItemCategoryResponse fromItemCategory(ItemCategory itemCategory){
+    public static ItemCategoryResponse fromItemCategory(ItemCategory itemCategory){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return new ItemCategoryResponse(
             itemCategory.getId().toString(),
