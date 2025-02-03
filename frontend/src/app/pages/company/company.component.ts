@@ -28,6 +28,8 @@ import { UserResponse } from '../../models/response/user-response';
 import { UserService } from '../../services/user/user.service';
 import { ContactResponse } from '../../models/response/contact-response';
 import { ContactService } from '../../services/contact/contact.service';
+import { CardModule } from 'primeng/card';
+import { DrawerModule } from 'primeng/drawer';
 
 interface Column {
     field: string;
@@ -61,7 +63,9 @@ interface ExportColumn {
         ConfirmDialogModule,
         MultiSelectModule,
         TooltipModule,
-        ListboxModule
+        ListboxModule,
+        CardModule,
+        DrawerModule
     ],
     templateUrl: './company.component.html',
     providers: [ConfirmationService]
@@ -72,7 +76,10 @@ export class CompanyComponent implements OnInit {
     companies = signal<CompanyResponse[]>([]);
 
     company!: CompanyRequest;
+    companyShow!: CompanyResponse;
     companyId!: string | null;
+
+    visbility: boolean = false;
 
     selectedCompanies!: CompanyResponse[] | null;
 
@@ -192,6 +199,11 @@ export class CompanyComponent implements OnInit {
         this.companyDialog = false;
         this.submitted = false;
     }
+
+    openVisibility(company: CompanyResponse){
+        this.companyShow = company;
+        this.visbility = true
+    }
     editCompany(company: CompanyResponse) {
         this.company = {
             name: company.name,
@@ -259,6 +271,14 @@ export class CompanyComponent implements OnInit {
             }
         }
         return index + '';
+    }
+
+    onCall(phone: string): void {
+        window.location.href = 'tel:' + phone;
+    }
+
+    onEmail(email: string): void {
+        window.location.href = 'mailto:' + email;
     }
 
 

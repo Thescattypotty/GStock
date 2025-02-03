@@ -17,12 +17,14 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { DrawerModule } from 'primeng/drawer';
 import { ContactService } from '../../services/contact/contact.service';
 import { ContactResponse } from '../../models/response/contact-response';
 import { CommonModule } from '@angular/common';
 import { ContactRequest } from '../../models/request/contact-request';
 import { CompanyResponse } from '../../models/response/company-response';
 import { CompanyService } from '../../services/company/company.service';
+import { CardModule } from 'primeng/card';
 
 interface Column {
     field: string;
@@ -56,7 +58,9 @@ interface ExportColumn {
         ConfirmDialogModule,
         MultiSelectModule,
         TooltipModule,
-        ListboxModule
+        ListboxModule,
+        DrawerModule,
+        CardModule
         ],
     templateUrl: './contact.component.html',
     providers: [ConfirmationService]
@@ -68,7 +72,10 @@ export class ContactComponent implements OnInit {
     companies: CompanyResponse[] = [];
 
     contact!: ContactRequest;
+    contactShow!: ContactResponse;
     contactId!: string | null;
+
+    visibility: boolean = false;
 
     selectedContacts!: ContactResponse[] | null;
     
@@ -140,6 +147,10 @@ export class ContactComponent implements OnInit {
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+    openVisibility(contact: ContactResponse){
+        this.contactShow = contact;
+        this.visibility = true;
     }
 
     openNew(){
@@ -223,7 +234,14 @@ export class ContactComponent implements OnInit {
         return index + '';
     }
 
+    onCall(phone: string): void {
+        window.location.href = 'tel:' + phone;
+    }
 
+    onEmail(email: string): void {
+        window.location.href = 'mailto:' + email;
+    }
+    
     updateContact(){
         this.submitted = true;
         if(this.contactId === null){

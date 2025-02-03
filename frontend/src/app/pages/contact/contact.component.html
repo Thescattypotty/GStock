@@ -39,51 +39,41 @@
             <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <th pSortableColumn="fullName" style="min-width: 16rem">
+            <th pSortableColumn="fullName" style="min-width: 12rem">
                 Full Name
                 <p-sortIcon field="fullName" />
             </th>
-            <th pSortableColumn="email" style="min-width: 16rem">
+            <th pSortableColumn="email" style="min-width: 12rem">
                 Email
                 <p-sortIcon field="email" />
             </th>
 
-            <th pSortableColumn="title" style="min-width: 16rem">
+            <th pSortableColumn="title" style="min-width: 12rem">
                 Title
                 <p-sortIcon field="title" />
             </th>
 
-            <th pSortableColumn="phone" style="min-width: 16rem">
+            <th pSortableColumn="phone" style="min-width: 12rem">
                 Phone Number
                 <p-sortIcon field="phone" />
             </th>
 
-            <th pSortableColumn="companyName" style="min-width: 16rem">
+            <th pSortableColumn="companyName" style="min-width: 12rem">
                 Company Name
                 <p-sortIcon field="companyName" />
             </th>
 
-            <th pSortableColumn="createdAt" style="min-width: 16rem">
-                Created At
-                <p-sortIcon field="createdAt" />
-            </th>
-
-            <th pSortableColumn="updatedAt" style="min-width: 16rem">
+            <th pSortableColumn="updatedAt" style="min-width: 12rem">
                 Updated At
                 <p-sortIcon field="updatedAt" />
             </th>
 
-            <th pSortableColumn="createdBy" style="min-width: 16rem">
-                Created By
-                <p-sortIcon field="createdBy" />
-            </th>
-
-            <th pSortableColumn="updatedBy" style="min-width: 16rem">
+            <th pSortableColumn="updatedBy" style="min-width: 12rem">
                 Modified By
                 <p-sortIcon field="updatedBy" />
             </th>
 
-            <th style="min-width: 12rem"></th>
+            <th style="min-width: 12rem">Actions</th>
         </tr>
     </ng-template>
     <ng-template #body let-contact>
@@ -91,7 +81,7 @@
             <td style="width: 3rem">
                 <p-tableCheckbox [value]="contact" />
             </td>
-            <td style="min-width: 12rem"  class="flex items-center gap-2">
+            <td class="flex items-center gap-2">
                 <img [src]="contact.imageUrl" [alt]="contact.fullName" style="width: 40px" class="rounded" />
                 <span>{{ contact.fullName }}</span>
             </td>
@@ -99,12 +89,13 @@
             <td style="min-width: 12rem">{{ contact.title }}</td>
             <td style="min-width: 12rem">{{ contact.phone }}</td>
             <td style="min-width: 12rem">{{ contact.companyResponse.name }}</td>
-            <td style="min-width: 12rem">{{ contact.createdAt }}</td>
             <td style="min-width: 12rem">{{ contact.updatedAt }}</td>
-            <td style="min-width: 12rem">{{ contact.createdBy }}</td>
             <td style="min-width: 12rem">{{ contact.updatedBy }}</td>
 
-            <td>
+            <td style="min-width: 16rem">
+                <p-button icon="pi pi-eye" pTooltip="Show Contact" class="mr-2" severity="info" [rounded]="true" [outlined]="true" (click)="openVisibility(contact)" />
+                <p-button icon="pi pi-phone" pTooltip="Make a call" class="mr-2" severity="success" [rounded]="true" [outlined]="true" (click)="onCall(contact.phone)" />
+                <p-button icon="pi pi-envelope" pTooltip="Send an email" class="mr-2" severity="secondary" [rounded]="true" [outlined]="true" (click)="onEmail(contact.email)" />
                 <p-button icon="pi pi-pencil" pTooltip="Update Contact" class="mr-2" [rounded]="true" [outlined]="true" (click)="editContact(contact)" />
                 <p-button icon="pi pi-trash" pTooltip="Delete Contact" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteContact(contact)" />
             </td>
@@ -114,15 +105,15 @@
 
 <p-dialog [(visible)]="contactDialog" [style]="{ width: '800px', weight: '1200px' }" header="Contact Details" [modal]="true">
     <ng-template #content>
-            <div>
-                <label for="name" class="block font-bold mb-3">Client Name</label>
-                <input type="text" pInputText id="name" [(ngModel)]="contact.fullName" required autofocus fluid />
-                <small class="text-red-500" *ngIf="submitted && !contact.fullName">Client Nameis required.</small>
-            </div>
+        <div>
+            <label for="name" class="block font-bold mb-3">Client Name</label>
+            <input type="text" pInputText id="name" [(ngModel)]="contact.fullName" required autofocus fluid />
+            <small class="text-red-500" *ngIf="submitted && !contact.fullName">Client Nameis required.</small>
+        </div>
         <div class="flex flex-wrap gap-6 mt-4">
             <div class="flex flex-col grow basis-0 gap-2">
                 <label for="company">Company</label>
-                <p-list-box id="company" [(ngModel)]="contact.companyId" [options]="companies" optionLabel="name" optionValue="id" placeholder="Select a company" [filter]="true"  />
+                <p-list-box id="company" [(ngModel)]="contact.companyId" [options]="companies" optionLabel="name" optionValue="id" placeholder="Select a company" [filter]="true" />
             </div>
             <div class="flex flex-col grow basis-0 gap-2">
                 <label for="title" class="block font-bold mb-3">Title</label>
@@ -156,5 +147,77 @@
         <p-button label="Save" icon="pi pi-check" (click)="contactId ? updateContact() : saveContact()" />
     </ng-template>
 </p-dialog>
+
+<p-drawer [(visible)]="visibility" header="Contact Informations" position="right" [style]="{ width: '800px' }">
+    <ng-template #content>
+        <p-card styleClass="contact-card">
+            <ng-template pTemplate="header">
+                <div class="p-grid p-align-center">
+                    <div class="p-col-12 p-md-4 p-text-center">
+                        <img [src]="contactShow.imageUrl" [alt]="contactShow.fullName" style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid #5dade2" />
+                    </div>
+                    <div class="p-col-12 p-md-8 p-text-center p-d-flex p-flex-column p-jc-center">
+                        <h2 class="m-0">{{ contactShow.fullName }}</h2>
+                        <span class="subtitle text-muted">{{ contactShow.title }}</span>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="p-grid p-mt-4">
+                <div class="p-col-12 p-md-6 p-field">
+                    <i class="pi pi-id-card" style="font-size: 1.5em; color: #5dade2"></i>
+                    <span class="ml-2"><strong>ID:</strong> {{ contactShow.id }}</span>
+                </div>
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">Informations de Contact</div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-envelope" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Email:</strong> {{ contactShow.email }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-phone" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Phone:</strong> {{ contactShow.phone }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-building" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Company:</strong> {{ contactShow.companyResponse.name }}</span>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-field">
+                    <i class="pi pi-check-square" style="font-size: 1.5em; color: #5dade2"></i>
+                    <span class="ml-2"><strong>Is Customer:</strong> {{ contactShow.isCustomer ? 'Yes' : 'No' }}</span>
+                </div>
+
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">Audit Log</div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-user" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Created By:</strong> {{ contactShow.createdBy }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-calendar" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Created At:</strong> {{ contactShow.createdAt | date: 'medium' }}</span>
+                    </div>
+
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-user" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Last Modified By:</strong> {{ contactShow.updatedBy }}</span>
+                    </div>
+
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-refresh" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Updated At:</strong> {{ contactShow.updatedAt | date: 'medium' }}</span>
+                    </div>
+                </div>
+            </div>
+            <ng-template pTemplate="footer">
+                <div class="p-text-right gap-6">
+                    <p-button label="Close" icon="pi pi-times" class="mr-2" (click)="visibility = false"></p-button>
+                    <p-button label="Edit" icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editContact(contactShow)" />
+                    <p-button label="Delete" icon="pi pi-trash" class="mr-2" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteContact(contactShow)" />
+                </div>
+            </ng-template>
+        </p-card>
+    </ng-template>
+</p-drawer>
 
 <p-confirmdialog [style]="{ width: '450px' }" />

@@ -91,7 +91,7 @@
                 <p-sortIcon field="updatedBy" />
             </th>
 
-            <th style="min-width: 12rem"></th>
+            <th style="min-width: 12rem">Actions</th>
         </tr>
     </ng-template>
     <ng-template #body let-company>
@@ -116,6 +116,7 @@
             <td style="min-width: 12rem">{{ company.updatedBy }}</td>
 
             <td>
+                <p-button icon="pi pi-eye" pTooltip="Show Company" class="mr-2" [rounded]="true" [outlined]="true" (click)="openVisibility(company)" />
                 <p-button icon="pi pi-pencil" pTooltip="Update Company" class="mr-2" [rounded]="true" [outlined]="true" (click)="editCompany(company)" />
                 <p-button icon="pi pi-trash" pTooltip="Delete Company" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteCompany(company)" />
             </td>
@@ -164,7 +165,7 @@
         <div class="flex flex-wrap gap-6 mt-4">
             <div class="flex flex-col grow basis-0 gap-2">
                 <label for="salesOwner" class="block font-bold mb-3">Sales Owner</label>
-                <p-select id="salesOwner" [(ngModel)]="company.salesOwnerId" [options]="salesOwners" optionLabel="username" optionValue="id"  placeholder="Select Sales Owner" class="w-full" />
+                <p-select id="salesOwner" [(ngModel)]="company.salesOwnerId" [options]="salesOwners" optionLabel="username" optionValue="id" placeholder="Select Sales Owner" class="w-full" />
                 <small class="text-red-500" *ngIf="submitted && !company.salesOwnerId">Sales Owner is required.</small>
             </div>
         </div>
@@ -187,5 +188,117 @@
         <p-button label="Save" icon="pi pi-check" (click)="companyId ? updateCompany() : saveCompany()" />
     </ng-template>
 </p-dialog>
+
+<p-drawer [(visible)]="visbility" header="Company Informations" position="right" [style]="{ width: '800px' }">
+    <ng-template #content>
+        <p-card styleClass="contact-card">
+            <ng-template pTemplate="header">
+                <div class="p-grid p-align-center">
+                    <div class="p-col-12 p-md-4 p-text-center">
+                        <img [src]="companyShow.imageUrl" [alt]="companyShow.name" style="width: 100px; height: 100px; border-radius: 20%; border: 2px solid #ac3f31" />
+                    </div>
+                    <div class="p-col-12 p-md-8 p-text-center p-d-flex p-flex-column p-jc-center">
+                        <h2 class="m-0">{{ companyShow.name }}</h2>
+                    </div>
+                </div>
+            </ng-template>
+            <div class="p-grid p-mt-4">
+                <div class="p-col-12 p-md-6 p-field">
+                    <i class="pi pi-id-card" style="font-size: 1.5em; color: #5dade2"></i>
+                    <span class="ml-2"><strong>ID:</strong> {{ companyShow.id }}</span>
+                </div>
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">Informations de Company</div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-envelope" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Size : </strong> {{ companyShow.size }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-phone" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Business Type:</strong> {{ companyShow.businessType }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-building" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Industry :</strong> {{ companyShow.industry }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-map" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Country: </strong> {{ companyShow.country }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-map-marker" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>City: </strong> {{ companyShow.city }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-map" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"> <strong>Address: </strong> {{ companyShow.address }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-globe" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"> <strong>Website: </strong> {{ companyShow.website }}</span>
+                    </div>
+                </div>
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">Contacts</div>
+                    <p-table [value]="companyShow.contacts" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 20]">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Name</th>
+                                <th>Title</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-contact>
+                            <tr>
+                                <td class="flex items-center gap-2">
+                                    <img [src]="contact.imageUrl" [alt]="contact.fullName" style="width: 40px" class="rounded" />
+                                    <span>{{ contact.fullName }}</span>
+                                </td>
+                                <td>{{ contact.title }}</td>
+                                <td>{{ contact.email }}</td>
+                                <td>{{ contact.phone }}</td>
+                                <td>
+                                    <p-button icon="pi pi-phone" pTooltip="Make a call" class="mr-2" [rounded]="true" [outlined]="true" (click)="onCall(contact.phone)" />
+                                    <p-button icon="pi pi-envelope" pTooltip="Send an email" severity="danger" [rounded]="true" [outlined]="true" (click)="onEmail(contact.email)" />
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">Audit Log</div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-user" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Created By:</strong> {{ companyShow.createdBy }}</span>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-calendar" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Created At:</strong> {{ companyShow.createdAt | date: 'medium' }}</span>
+                    </div>
+
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-user" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Last Modified By:</strong> {{ companyShow.updatedBy }}</span>
+                    </div>
+
+                    <div class="p-col-12 p-md-6 p-field">
+                        <i class="pi pi-refresh" style="font-size: 1.5em; color: #5dade2"></i>
+                        <span class="ml-2"><strong>Updated At:</strong> {{ companyShow.updatedAt | date: 'medium' }}</span>
+                    </div>
+                </div>
+            </div>
+            <ng-template pTemplate="footer">
+                <div class="p-text-right gap-6">
+                    <p-button label="Close" icon="pi pi-times" class="mr-2" (click)="visbility = false"></p-button>
+                    <p-button label="Edit" icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="editCompany(companyShow)" />
+                    <p-button label="Delete" icon="pi pi-trash" class="mr-2" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteCompany(companyShow)" />
+                </div>
+            </ng-template>
+        </p-card>
+    </ng-template>
+</p-drawer>
 
 <p-confirmdialog [style]="{ width: '450px' }" />
