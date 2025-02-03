@@ -224,7 +224,7 @@ export class CompanyComponent implements OnInit {
 
     deleteCompany(company: CompanyResponse) {
         this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + company.name + '?',
+            message: 'Are you sure you want to delete ' + company.name + '? (Note: This will also delete all contacts of this company)',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

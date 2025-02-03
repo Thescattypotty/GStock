@@ -39,54 +39,45 @@
             <th style="width: 3rem">
                 <p-tableHeaderCheckbox />
             </th>
-            <th pSortableColumn="name" style="min-width: 16rem">
+            <th pSortableColumn="name" >
                 Name
                 <p-sortIcon field="name" />
             </th>
-            <th pSortableColumn="size" style="min-width: 16rem">
+            <th pSortableColumn="size" >
                 Size
                 <p-sortIcon field="size" />
             </th>
 
-            <th pSortableColumn="industry" style="min-width: 16rem">
+            <th pSortableColumn="industry" >
                 Industry
                 <p-sortIcon field="industry" />
             </th>
 
-            <th pSortableColumn="businessType" style="min-width: 16rem">
+            <th pSortableColumn="businessType" >
                 Business Type
                 <p-sortIcon field="businessType" />
             </th>
 
-            <th pSortableColumn="country" style="min-width: 16rem">
+            <th pSortableColumn="country" >
                 Country
                 <p-sortIcon field="country" />
             </th>
-            <th pSortableColumn="city" style="min-width: 16rem">
+            <th pSortableColumn="city" >
                 City
                 <p-sortIcon field="city" />
             </th>
-            <th pSortableColumn="salesOwner" style="min-width: 16rem">
+            <th pSortableColumn="salesOwner" >
                 Sales Owner
                 <p-sortIcon field="salesOwner" />
             </th>
 
-            <th pSortableColumn="createdAt" style="min-width: 16rem">
-                Created At
-                <p-sortIcon field="createdAt" />
-            </th>
-
-            <th pSortableColumn="updatedAt" style="min-width: 16rem">
+            <th pSortableColumn="updatedAt" >
                 Updated At
                 <p-sortIcon field="updatedAt" />
             </th>
 
-            <th pSortableColumn="createdBy" style="min-width: 16rem">
-                Created By
-                <p-sortIcon field="createdBy" />
-            </th>
 
-            <th pSortableColumn="updatedBy" style="min-width: 16rem">
+            <th pSortableColumn="updatedBy" >
                 Modified By
                 <p-sortIcon field="updatedBy" />
             </th>
@@ -108,11 +99,9 @@
             <td style="min-width: 12rem">{{ company.businessType }}</td>
             <td style="min-width: 12rem">{{ company.country }}</td>
             <td style="min-width: 12rem">{{ company.city }}</td>
-            <td style="min-width: 12rem">{{ company.salesOwner.username }}</td>
+            <td style="min-width: 12rem" [pTooltip]="company.salesOwner.firstName + ' ' + company.salesOwner.lastName">{{ company.salesOwner.username }}</td>
 
-            <td style="min-width: 12rem">{{ company.createdAt }}</td>
             <td style="min-width: 12rem">{{ company.updatedAt }}</td>
-            <td style="min-width: 12rem">{{ company.createdBy }}</td>
             <td style="min-width: 12rem">{{ company.updatedBy }}</td>
 
             <td>
@@ -199,6 +188,10 @@
                     </div>
                     <div class="p-col-12 p-md-8 p-text-center p-d-flex p-flex-column p-jc-center">
                         <h2 class="m-0">{{ companyShow.name }}</h2>
+                        <div class="flex items-center gap-4">
+                            <img [src]="companyShow.salesOwner.imageUrl" [alt]="companyShow.salesOwner.email" style="width: 40px" class="rounded" />
+                            <span class="subtitle text-muted">{{ companyShow.salesOwner.username }}</span>
+                        </div>
                     </div>
                 </div>
             </ng-template>

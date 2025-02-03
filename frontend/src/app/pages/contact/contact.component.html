@@ -88,7 +88,7 @@
             <td style="min-width: 12rem">{{ contact.email }}</td>
             <td style="min-width: 12rem">{{ contact.title }}</td>
             <td style="min-width: 12rem">{{ contact.phone }}</td>
-            <td style="min-width: 12rem">{{ contact.companyResponse.name }}</td>
+            <td style="min-width: 12rem" [pTooltip]="contact.companyResponse.salesOwner.firstName + ' ' + contact.companyResponse.salesOwner.lastName">{{ contact.companyResponse.name }}</td>
             <td style="min-width: 12rem">{{ contact.updatedAt }}</td>
             <td style="min-width: 12rem">{{ contact.updatedBy }}</td>
 
