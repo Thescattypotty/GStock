@@ -284,10 +284,16 @@ export class QuoteComponent implements OnInit {
             }
         });
     }
+
     margeDeGain(productQuotes: ProductQuoteResponse[]): number {
-        return productQuotes.reduce((total, product) => {
-            return total + product.item.costPrice * product.margeDeGain * (1 - product.discount) * product.quantity;
-        }, 0);
+        const totalWithMarge = this.prixDeVentes(productQuotes);
+        const productQuotesWithoutMarge = productQuotes.map((p) => ({ ...p, margeDeGain: 0 }));
+        const totalWithoutMarge = this.prixDeVentes(productQuotesWithoutMarge);
+        const difference = totalWithMarge - totalWithoutMarge;
+        if (totalWithoutMarge === 0) {
+            return 0;
+        }
+        return (difference / totalWithoutMarge) * 100;
     }
 
     prixDeVentes(productQuotes: ProductQuoteResponse[]): number {
@@ -306,6 +312,7 @@ export class QuoteComponent implements OnInit {
             discount: 0
         });
     }
+
     removeProductQuote(index: number) {
         this.quote.productQuoteRequest.splice(index, 1);
     }
@@ -313,4 +320,5 @@ export class QuoteComponent implements OnInit {
     getQuantity(itemId: string): number {
         return this.items.find(item => item.id === itemId)?.quantity || 0;
     }
+
 }

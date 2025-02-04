@@ -77,6 +77,17 @@ public class QuoteService implements IQuoteService{
         Contact contact = contactRepository.findById(UUID.fromString(quoteRequest.contactId()))
             .orElseThrow(() -> new ContactNotFoundException());
 
+        quote.getProductQuote().clear();
+        List<ProductQuote> productQuotes = quoteRequest.productQuoteRequest().stream()
+            .map(productQuoteRequest -> {
+                InventoryItem item = inventoryItemRepository.findById(UUID.fromString(productQuoteRequest.itemId()))
+                    .orElseThrow(() -> new InventoryItemNotFoundException());
+                return productQuoteService.createProductQuote(ProductQuoteMapper.toProductQuote(productQuoteRequest, item));
+            })
+            .collect(Collectors.toList());
+        
+        quote.getProductQuote().addAll(productQuotes);
+
         quote = QuoteMapper.toQuote(quote, quoteRequest, company, contact);
         quoteRepository.save(quote);
     }

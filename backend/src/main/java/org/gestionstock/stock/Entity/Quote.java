@@ -59,7 +59,7 @@ public class Quote {
     private String description;
 
     //Strong relation with productQuote
-    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.EAGER ,orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.EAGER , orphanRemoval = true)
     @JoinColumn(name = "quote_id", nullable = false, updatable = true)
     private List<ProductQuote> productQuote;
 

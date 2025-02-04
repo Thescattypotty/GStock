@@ -94,7 +94,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="quoteDialog" [style]="{ width: '1200px', weight: '1200px' }" header="Quote Details" [modal]="true" (onHide)="hideDialog()" >
+<p-dialog [(visible)]="quoteDialog" [style]="{ width: '1200px', weight: '1200px' }" header="Quote Details" [modal]="true" (onHide)="hideDialog()">
     <ng-template #content>
         <div class="flex flex-col gap-6">
             <div class="flex flex-col gap-4">
@@ -140,12 +140,14 @@
                             </div>
                             <div class="flex flex-col grow basis-0 gap-2">
                                 <label for="actions">Actions</label>
-                                <p-button pButtonIcon icon="pi pi-trash" id="actions" pTooltip="Delete Item" severity="danger" [rounded]="true" [outlined]="true" (click)="removeProductQuote(i)" />
+                                <div class="flex grow basis-0 gap-2">
+                                    <p-button pButtonIcon icon="pi pi-trash" id="actions" pTooltip="Delete Item" severity="danger" [rounded]="true" [outlined]="true" (click)="removeProductQuote(i)" />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6">
-                        <p-button label="Add Item" (click)="addProductQuote()"></p-button>
+                        <p-button pButtonIcon label="Add Item" icon="pi pi-plus" severity="success" [rounded]="true" (click)="addProductQuote()"></p-button>
                     </div>
                 </div>
             </div>
