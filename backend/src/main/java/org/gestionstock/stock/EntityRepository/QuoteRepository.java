@@ -1,16 +1,16 @@
 package org.gestionstock.stock.EntityRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.gestionstock.stock.Entity.Company;
-import org.gestionstock.stock.Entity.User;
+import org.gestionstock.stock.Entity.Contact;
+import org.gestionstock.stock.Entity.Quote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, UUID>{
-    List<Company> findBySalesOwner(User salesOwner);
-    Optional<Company> findByName(String name);
+public interface QuoteRepository extends JpaRepository<Quote, UUID>{
+    List<Quote> findByCompany(Company company);
+    List<Quote> findByContact(Contact contact);
 }

@@ -5,9 +5,7 @@ import java.time.format.DateTimeFormatter;
 import org.gestionstock.stock.Entity.ItemCategory;
 import org.gestionstock.stock.Payload.Request.ItemCategoryRequest;
 import org.gestionstock.stock.Payload.Response.ItemCategoryResponse;
-import org.springframework.stereotype.Service;
 
-@Service(value = "ItemCategoryMapper")
 public class ItemCategoryMapper {
     
     public static ItemCategory toItemCategory(ItemCategoryRequest itemCategoryRequest){

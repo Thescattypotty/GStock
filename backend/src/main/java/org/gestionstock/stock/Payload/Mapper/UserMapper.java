@@ -5,9 +5,7 @@ import java.time.format.DateTimeFormatter;
 import org.gestionstock.stock.Entity.User;
 import org.gestionstock.stock.Payload.Request.RegisterRequest;
 import org.gestionstock.stock.Payload.Response.UserResponse;
-import org.springframework.stereotype.Service;
 
-@Service(value = "UserMapper")
 public class UserMapper {
     
     public static User toUser(RegisterRequest registerRequest){

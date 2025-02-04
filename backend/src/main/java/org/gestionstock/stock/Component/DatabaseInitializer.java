@@ -1,22 +1,27 @@
 package org.gestionstock.stock.Component;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 import org.gestionstock.stock.Entity.Company;
 import org.gestionstock.stock.Entity.Contact;
 import org.gestionstock.stock.Entity.InventoryItem;
 import org.gestionstock.stock.Entity.ItemCategory;
+import org.gestionstock.stock.Entity.Quote;
 import org.gestionstock.stock.Entity.User;
 import org.gestionstock.stock.EntityRepository.CompanyRepository;
 import org.gestionstock.stock.EntityRepository.ContactRepository;
 import org.gestionstock.stock.EntityRepository.InventoryItemRepository;
 import org.gestionstock.stock.EntityRepository.ItemCategoryRepository;
+import org.gestionstock.stock.EntityRepository.QuoteRepository;
 import org.gestionstock.stock.EntityRepository.UserRepository;
 import org.gestionstock.stock.Enum.EBusinessType;
 import org.gestionstock.stock.Enum.ECompanySize;
 import org.gestionstock.stock.Enum.EIndustry;
 import org.gestionstock.stock.Enum.ERole;
+import org.gestionstock.stock.Payload.Request.ProductQuoteRequest;
+import org.gestionstock.stock.Service.ProductQuoteService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +39,8 @@ public class DatabaseInitializer implements CommandLineRunner{
     private final ItemCategoryRepository itemCategoryRepository;
     private final CompanyRepository companyRepository;
     private final ContactRepository contactRepository;
+    private final QuoteRepository quoteRepository;
+    private final ProductQuoteService productQuoteService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -41,6 +48,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         initUsers();
         initInventory();
         initCompaniesAndContacts();
+        initQuotes();
     }
 
     @Transactional
@@ -112,7 +120,7 @@ public class DatabaseInitializer implements CommandLineRunner{
                 .name("Laptop")
                 .description("Dell XPS 15")
                 .quantity(10L)
-                .costPrice(BigDecimal.valueOf(1500))
+                .costPrice(BigDecimal.valueOf(10))
                 .tva(BigDecimal.valueOf(0.15))
                 .category(itemCategory1)
                 .createdBy("admin")
@@ -124,7 +132,7 @@ public class DatabaseInitializer implements CommandLineRunner{
                 .name("T-shirt")
                 .description("Blue T-shirt")
                 .quantity(100L)
-                .costPrice(BigDecimal.valueOf(20))
+                .costPrice(BigDecimal.valueOf(10))
                 .tva(BigDecimal.valueOf(0.20))
                 .category(itemCategory2)
                 .createdBy("admin")
@@ -292,6 +300,41 @@ public class DatabaseInitializer implements CommandLineRunner{
                 .build();
             contactRepository.save(contact9);
             
+        }
+    }
+
+    @Transactional
+    public void initQuotes(){
+        if(quoteRepository.findAll().stream().findAny().isEmpty()){
+            setAuthenticatedUser("manager");
+            Company company = companyRepository.findByName("Company 1").get();
+            InventoryItem item1 = inventoryItemRepository.findByName("Laptop").get();
+            InventoryItem item2 = inventoryItemRepository.findByName("T-shirt").get();
+            InventoryItem item3 = inventoryItemRepository.findByName("Java Programming").get();
+
+            Quote quote1 = Quote.builder()
+                .quoteName("Quote 1")
+                .company(company)
+                .contact(company.getContacts().get(0))
+                .description("Quote 1 description")
+                .productQuote(
+                    List.of(
+                        productQuoteService.createProductQuote(
+                            new ProductQuoteRequest("", 2L, 0.8, 0.0),
+                            item1
+                        ),
+                        productQuoteService.createProductQuote(
+                            new ProductQuoteRequest("", 1L, 0.7, 0.0),
+                            item2
+                        ),
+                        productQuoteService.createProductQuote(
+                            new ProductQuoteRequest("", 1L, 0.3, 0.0),
+                            item3
+                        )
+                    )
+                )
+                .build();
+            quoteRepository.save(quote1);
         }
     }
 

@@ -5,9 +5,7 @@ import java.time.format.DateTimeFormatter;
 import org.gestionstock.stock.Entity.Contact;
 import org.gestionstock.stock.Payload.Request.ContactRequest;
 import org.gestionstock.stock.Payload.Response.ContactResponse;
-import org.springframework.stereotype.Service;
 
-@Service(value = "ContactMapper")
 public class ContactMapper {
 
     public static Contact toContact(ContactRequest contactRequest){

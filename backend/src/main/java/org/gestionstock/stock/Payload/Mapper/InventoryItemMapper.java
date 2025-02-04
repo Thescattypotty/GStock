@@ -6,10 +6,7 @@ import java.time.format.DateTimeFormatter;
 import org.gestionstock.stock.Entity.InventoryItem;
 import org.gestionstock.stock.Payload.Request.InventoryItemRequest;
 import org.gestionstock.stock.Payload.Response.InventoryItemResponse;
-import org.springframework.stereotype.Service;
 
-
-@Service(value = "InventoryItemMapper")
 public class InventoryItemMapper {
     
     public static InventoryItem toInventoryItem(InventoryItemRequest inventoryItemRequest){

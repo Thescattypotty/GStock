@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import org.gestionstock.stock.Entity.Company;
 import org.gestionstock.stock.Payload.Request.CompanyRequest;
 import org.gestionstock.stock.Payload.Response.CompanyResponse;
-import org.springframework.stereotype.Service;
 
-@Service(value = "CompanyMapper")
 public class CompanyMapper {
     
     public static Company toCompany(CompanyRequest companyRequest){
