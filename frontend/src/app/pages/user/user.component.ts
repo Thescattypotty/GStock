@@ -252,21 +252,25 @@ export class UserComponent implements OnInit{
     hideDialog(){
         this.userDialog = false;
         this.submitted = false;
+        this.userUpdatedId = null;
     }
 
     hideUpdateDialog(){
         this.userUpdateDialog = false;
         this.submitted = false;
+        this.userUpdatedId = null;
     }
 
     hideChangePasswordDialog(){
         this.changePasswordDialog = false;
         this.submitted = false;
+        this.userChangePasswordId = null;
     }
 
     hideChangeUsernameDialog(){
         this.changeUsernameDialog = false;
         this.submitted = false;
+        this.userChangeUsernameId = null;
     }
 
     deleteUser(userResponse: UserResponse){

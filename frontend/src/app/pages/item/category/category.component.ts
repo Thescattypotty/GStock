@@ -135,6 +135,7 @@ export class CategoryComponent implements OnInit{
     hideDialog(){
         this.categoryDialog = false;
         this.submitted = false;
+        this.categoryId = null;
     }
     editCategory(category: ItemCategoryResponse){
         this.category = {
@@ -212,6 +213,7 @@ export class CategoryComponent implements OnInit{
                 this.messageService.add({severity:'error', summary:'Error', detail:'Failed to update category'});
             }
         });
+        this.categoryId = null;
     }
 
     saveCategory(): void {

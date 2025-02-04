@@ -35,8 +35,8 @@ export class AppMenu {
                 label: 'Sales',
                 items: [
                     { label: 'Companies', icon: 'pi pi-fw pi-building', routerLink: ['/dashboard/companies'] },
-                    {
-                        label: 'Contacts', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/contacts'] },
+                    { label: 'Contacts', icon: 'pi pi-fw pi-users', routerLink: ['/dashboard/contacts'] },
+                    { label: 'Quotes', icon: 'pi pi-fw pi-briefcase', routerLink: ['/dashboard/quotes'] }
                 ]
             },
             {

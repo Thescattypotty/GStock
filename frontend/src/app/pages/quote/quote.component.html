@@ -1,0 +1,161 @@
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+        <p-button severity="secondary" label="Delete" icon="pi pi-trash" outlined (onClick)="deleteSelectedQuotes()" [disabled]="!selectedQuotes || !selectedQuotes.length" />
+    </ng-template>
+
+    <ng-template #end>
+        <p-button label="Export" icon="pi pi-upload" severity="secondary" (onClick)="exportCSV()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table
+    #dt
+    [value]="quotes()"
+    [rows]="10"
+    [columns]="cols"
+    [paginator]="true"
+    [globalFilterFields]="['quoteName', 'company', 'contact', 'margeDeGain', 'ventes', 'createdAt', 'updatedAt']"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [(selection)]="selectedQuotes"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Quotes"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 20, 30]"
+>
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Quotes</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+        </div>
+    </ng-template>
+
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th pSortableColumn="quoteName" style="min-width: 16rem">
+                Name
+                <p-sortIcon field="quoteName" />
+            </th>
+
+            <th pSortableColumn="company" style="min-width: 16rem">
+                Company
+                <p-sortIcon field="company" />
+            </th>
+
+            <th pSortableColumn="contact" style="min-width: 16rem">
+                Contact
+                <p-sortIcon field="contact" />
+            </th>
+
+            <th pSortableColumn="margeDeGain" style="min-width: 16rem">
+                Marge de Gain
+                <p-sortIcon field="margeDeGain" />
+            </th>
+
+            <th pSortableColumn="ventes" style="min-width: 16rem">
+                Prix de ventes
+                <p-sortIcon field="ventes" />
+            </th>
+            <th pSortableColumn="createdAt" style="min-width: 16rem">
+                Created At
+                <p-sortIcon field="createdAt" />
+            </th>
+            <th pSortableColumn="updatedAt" style="min-width: 16rem">
+                Modified At
+                <p-sortIcon field="updatedAt" />
+            </th>
+            <th style="min-width: 12rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-quote>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="quote" />
+            </td>
+            <td style="min-width: 12rem">{{ quote.quoteName }}</td>
+            <td style="min-width: 12rem">{{ quote.company.name }}</td>
+            <td style="min-width: 12rem">{{ quote.contact.fullName }}</td>
+            <td style="min-width: 12rem">{{ margeDeGain(quote.productQuote) }} %</td>
+            <td style="min-width: 12rem">{{ prixDeVentes(quote.productQuote) }} DH</td>
+            <td style="min-width: 12rem">{{ quote.createdAt }}</td>
+            <td style="min-width: 12rem">{{ quote.updatedAt }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" pTooltip="Update Quote" class="mr-2" [rounded]="true" [outlined]="true" (click)="editQuote(quote)" />
+                <p-button icon="pi pi-trash" pTooltip="Delete Quote" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteQuote(quote)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="quoteDialog" [style]="{ width: '1200px', weight: '1200px' }" header="Quote Details" [modal]="true" (onHide)="hideDialog()" >
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-4">
+                <label for="quoteName">Quote Name</label>
+                <input type="text" pInputText id="quoteName" [(ngModel)]="quote.quoteName" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !quote.quoteName"> Quote Name is a required field</small>
+            </div>
+            <div class="flex flex-col gap-4">
+                <label for="description">Description</label>
+                <textarea pTextarea id="description" rows="4" [(ngModel)]="quote.description" required autofocus fluid></textarea>
+                <small class="text-red-500" *ngIf="submitted && !quote.description">Quote Description is required.</small>
+            </div>
+            <div class="flex flex-col gap-6">
+                <div class="flex flex-col grow basis-0 gap-4">
+                    <label for="company">Company</label>
+                    <p-select id="company" [(ngModel)]="quote.companyId" [options]="companies" optionLabel="name" optionValue="id" placeholder="Select a Company" class="w-full" (onChange)="onCompanySelect($event)"></p-select>
+                </div>
+                <div class="flex flex-col grow basis-0 gap-4">
+                    <label for="contact">Contact</label>
+                    <p-select id="contact" [(ngModel)]="quote.contactId" [options]="contacts" optionLabel="fullName" optionValue="id" placeholder="Select a Contact" class="w-full"> </p-select>
+                </div>
+            </div>
+            <div class="flex flex-col gap-6">
+                <label for="items" class="block font-bold">Items</label>
+                <div class="flex flex-col gap-6" id="items">
+                    <div *ngFor="let product of quote.productQuoteRequest; let i = index" class="flex flex-col gap-2">
+                        <div class="flex flex-wrap gap-4">
+                            <div class="flex flex-col grow basis-0 gap-2">
+                                <label for="item{{ i }}">Item</label>
+                                <p-select id="item{{ i }}" [options]="items" optionLabel="name" optionValue="id" placeholder="Select Item" [(ngModel)]="product.itemId" class="w-full"></p-select>
+                            </div>
+                            <div class="flex flex-col grow basis-0 gap-2">
+                                <label for="quantity{{ i }}">Quantity</label>
+                                <input pInputText type="number" id="quantity{{ i }}" [(ngModel)]="product.quantity" min="1" [max]="getQuantity(product.itemId)" />
+                            </div>
+                            <div class="flex flex-col grow basis-0 gap-2">
+                                <label for="marge{{ i }}">Marge De Gain</label>
+                                <input pInputText type="number" id="marge{{ i }}" [(ngModel)]="product.margeDeGain" max="1" min="0" />
+                            </div>
+                            <div class="flex flex-col grow basis-0 gap-2">
+                                <label for="discount{{ i }}">Discount</label>
+                                <input pInputText type="number" id="discount{{ i }}" [(ngModel)]="product.discount" max="1" min="0" />
+                            </div>
+                            <div class="flex flex-col grow basis-0 gap-2">
+                                <label for="actions">Actions</label>
+                                <p-button pButtonIcon icon="pi pi-trash" id="actions" pTooltip="Delete Item" severity="danger" [rounded]="true" [outlined]="true" (click)="removeProductQuote(i)" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p-button label="Add Item" (click)="addProductQuote()"></p-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="quoteId ? updateQuote() : saveQuote()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />

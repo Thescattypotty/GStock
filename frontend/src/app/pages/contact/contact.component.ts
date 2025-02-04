@@ -169,6 +169,7 @@ export class ContactComponent implements OnInit {
     hideDialog(){
         this.contactDialog = false;
         this.submitted = false;
+        this.contactId = null;
     }
     editContact(contact: ContactResponse){
         this.contact = {
@@ -257,6 +258,7 @@ export class ContactComponent implements OnInit {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while updating contact' });
             }
         });
+        this.contactId = null;
     }
 
     saveContact(){

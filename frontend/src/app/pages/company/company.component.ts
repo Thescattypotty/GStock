@@ -198,6 +198,7 @@ export class CompanyComponent implements OnInit {
     hideDialog() {
         this.companyDialog = false;
         this.submitted = false;
+        this.companyId = null;
     }
 
     openVisibility(company: CompanyResponse){
@@ -297,6 +298,7 @@ export class CompanyComponent implements OnInit {
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while updating company' });
             }
         });
+        this.companyId = null;
     }
 
     saveCompany() {

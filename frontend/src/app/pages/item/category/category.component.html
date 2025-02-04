@@ -86,7 +86,7 @@
 </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="categoryDialog" [style]="{ width: '800px', weight: '1200px' }" header="Category Details" [modal]="true">
+<p-dialog [(visible)]="categoryDialog" [style]="{ width: '800px', weight: '1200px' }" header="Category Details" [modal]="true" (onHide)="hideDialog()">
     <ng-template #content>
         <div class="flex flex-col gap-6">
             <div>

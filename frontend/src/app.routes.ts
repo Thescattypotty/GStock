@@ -12,6 +12,7 @@ import { CategoryComponent } from './app/pages/item/category/category.component'
 import { ProfileComponent } from './app/pages/profile/profile.component';
 import { CompanyComponent } from './app/pages/company/company.component';
 import { ContactComponent } from './app/pages/contact/contact.component';
+import { QuoteComponent } from './app/pages/quote/quote.component';
 
 
 export const appRoutes: Routes = [
@@ -54,6 +55,9 @@ export const appRoutes: Routes = [
             },
             {
                 path: 'contacts', component: ContactComponent
+            },
+            {
+                path: 'quotes', component: QuoteComponent
             },
             {
                 path: 'profile', component: ProfileComponent

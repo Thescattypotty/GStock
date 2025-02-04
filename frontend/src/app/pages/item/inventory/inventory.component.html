@@ -86,7 +86,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="itemDialog" [style]="{ width: '800px', weight: '1200px' }" header="Item Details" [modal]="true">
+<p-dialog [(visible)]="itemDialog" [style]="{ width: '800px', weight: '1200px' }" header="Item Details" [modal]="true" (onHide)="hideDialog()">
     <ng-template #content>
         <div class="flex flex-col gap-6">
             <div>
@@ -110,6 +110,7 @@
             <div class="flex flex-wrap">
                 <label for="description">Description</label>
                 <textarea pTextarea id="description" rows="4" [(ngModel)]="item.description" required autofocus fluid></textarea>
+                <small class="text-red-500" *ngIf="submitted && !item.description">Item Description is required.</small>
             </div>
             <div class="flex flex-wrap gap-6">
                 <div class="flex flex-col grow basis-0 gap-2">

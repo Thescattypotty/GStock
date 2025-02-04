@@ -103,7 +103,7 @@
     </ng-template>
 </p-table>
 
-<p-dialog [(visible)]="contactDialog" [style]="{ width: '800px', weight: '1200px' }" header="Contact Details" [modal]="true">
+<p-dialog [(visible)]="contactDialog" [style]="{ width: '800px', weight: '1200px' }" header="Contact Details" [modal]="true" (onHide)="hideDialog()">
     <ng-template #content>
         <div>
             <label for="name" class="block font-bold mb-3">Client Name</label>

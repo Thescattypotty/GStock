@@ -157,6 +157,7 @@ export class InventoryComponent implements OnInit{
     hideDialog(){
         this.itemDialog = false;
         this.submitted = false;
+        this.itemId = null;
     }
     editItem(item: InventoryItemResponse){
         this.item = {
@@ -179,7 +180,7 @@ export class InventoryComponent implements OnInit{
             accept: () => {
                 this.itemService.deleteItem(item.id).subscribe({
                     next: () => {
-                        this.items.set(this.items().filter(val => val.id !== item.id));
+                        this.loadItems();
                         this.messageService.add({severity:'success', summary:'Success', detail:'Item deleted', life: 3000});
                     },
                     error: (error) => {
@@ -199,7 +200,7 @@ export class InventoryComponent implements OnInit{
                 this.selectedItems.forEach((item) => {
                     this.itemService.deleteItem(item.id).subscribe({
                         next: () => {
-                            this.items.set(this.items().filter(val => val.id !== item.id));
+                            this.loadItems();
                             this.messageService.add({severity:'success', summary:'Success', detail:'Item deleted', life: 3000});
                         },
                         error: (error) => {
@@ -236,6 +237,7 @@ export class InventoryComponent implements OnInit{
                 this.messageService.add({severity:'error', summary:'Error', detail:'Failed to update item', life: 3000});
             }
         });
+        this.itemId = null;
     }
 
     saveItem(): void {
