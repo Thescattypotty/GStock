@@ -8,9 +8,9 @@
 		<version>3.4.2</version>
         <relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>org.gestionstock</groupId>
 	<artifactId>stock</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>stock-gestion</name>
 	<description>Demo project for Spring Boot</description>
 
