@@ -15,7 +15,7 @@
     [rows]="10"
     [columns]="cols"
     [paginator]="true"
-    [globalFilterFields]="['quoteName', 'company', 'contact', 'margeDeGain', 'ventes', 'createdAt', 'updatedAt']"
+    [globalFilterFields]="['quoteName', 'company.name', 'contact.name', 'margeDeGain', 'ventes', 'createdAt', 'updatedAt']"
     [tableStyle]="{ 'min-width': '75rem' }"
     [(selection)]="selectedQuotes"
     [rowHover]="true"
@@ -82,11 +82,12 @@
             <td style="min-width: 12rem">{{ quote.quoteName }}</td>
             <td style="min-width: 12rem">{{ quote.company.name }}</td>
             <td style="min-width: 12rem">{{ quote.contact.fullName }}</td>
-            <td style="min-width: 12rem">{{ margeDeGain(quote.productQuote) }} %</td>
-            <td style="min-width: 12rem">{{ prixDeVentes(quote.productQuote) }} DH</td>
+            <td style="min-width: 12rem">{{ margeDeGain(quote.productQuote) | number:'1.2-2' }} %</td>
+            <td style="min-width: 12rem">{{ prixDeVentes(quote.productQuote) | number:'1.2-2' }} DH</td>
             <td style="min-width: 12rem">{{ quote.createdAt }}</td>
             <td style="min-width: 12rem">{{ quote.updatedAt }}</td>
             <td>
+                <p-button icon="pi pi-eye" pTooltip="Generate Quote" severity="info" class="mr-2" [rounded]="true" [outlined]="true" (click)="generateQuota(quote)" />
                 <p-button icon="pi pi-pencil" pTooltip="Update Quote" class="mr-2" [rounded]="true" [outlined]="true" (click)="editQuote(quote)" />
                 <p-button icon="pi pi-trash" pTooltip="Delete Quote" severity="danger" [rounded]="true" [outlined]="true" (click)="deleteQuote(quote)" />
             </td>

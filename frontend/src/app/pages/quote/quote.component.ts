@@ -26,11 +26,9 @@ import { QuoteRequest } from '../../models/request/quote-request';
 import { CompanyResponse } from '../../models/response/company-response';
 import { ContactResponse } from '../../models/response/contact-response';
 import { CompanyService } from '../../services/company/company.service';
-import { ContactService } from '../../services/contact/contact.service';
 import { ProductQuoteResponse } from '../../models/response/product-quote-response';
 import { InventoryItemResponse } from '../../models/response/inventory-item-response';
 import { InventoryItemService } from '../../services/item/inventory-item.service';
-
 
 interface Column {
     field: string;
@@ -97,7 +95,7 @@ export class QuoteComponent implements OnInit {
         private companyService: CompanyService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
-        private itemService: InventoryItemService
+        private itemService: InventoryItemService,
     ) { }
 
     ngOnInit(): void {
@@ -321,4 +319,7 @@ export class QuoteComponent implements OnInit {
         return this.items.find(item => item.id === itemId)?.quantity || 0;
     }
 
+    generateQuota(quote: QuoteResponse): void {
+        this.messageService.add({severity:'success', summary:'Successful', detail:'Quote Generated', life: 3000});
+    }
 }
